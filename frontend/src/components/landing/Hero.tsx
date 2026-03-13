@@ -173,7 +173,15 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="font-display text-center text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6"
         >
-          <span className="text-white">Validate your</span>
+          <span
+            style={{
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #ec4899 80%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 24px rgba(99,102,241,0.55)) drop-shadow(0 0 48px rgba(139,92,246,0.30))',
+            }}
+          >Validate your</span>
           <br />
           <span style={{
             background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #ec4899 80%)',
@@ -184,7 +192,7 @@ export const Hero: React.FC = () => {
             startup idea
           </span>
           <br />
-          <span className="text-white">in 60 seconds.</span>
+          <span className="text-slate-800">in 60 seconds.</span>
         </motion.h1>
 
         <motion.p
