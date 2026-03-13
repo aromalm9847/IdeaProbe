@@ -30,7 +30,7 @@ export const ScannerPage: React.FC = () => {
             className="flex flex-col items-center justify-center min-h-[80vh] px-4"
           >
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white mb-3">What's your startup idea?</h1>
+              <h1 className="text-4xl font-bold text-slate-900 mb-3">What's your startup idea?</h1>
               <p className="text-slate-400">Get your full validation report in 60 seconds. Free.</p>
             </div>
             <IdeaInput initialIdea={initialIdea} onSubmit={handleSubmit} />
@@ -47,7 +47,7 @@ export const ScannerPage: React.FC = () => {
             className="flex flex-col items-center justify-center min-h-[80vh] px-4"
           >
             <div className="w-full max-w-lg">
-              <h2 className="text-2xl font-bold text-white text-center mb-8">Scanning your idea...</h2>
+              <h2 className="text-2xl font-bold text-slate-900 text-center mb-8">Scanning your idea...</h2>
               <ScanProgress ideaText={ideaText} />
             </div>
           </motion.div>
@@ -73,10 +73,10 @@ export const ScannerPage: React.FC = () => {
             animate={{ opacity: 1 }}
             className="flex flex-col items-center justify-center min-h-[80vh] px-4 text-center"
           >
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-8 max-w-md">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-8 max-w-md shadow-soft">
               <div className="text-4xl mb-4">⚠️</div>
-              <h2 className="text-white font-bold text-xl mb-3">Scan Failed</h2>
-              <p className="text-slate-400 text-sm mb-6">
+              <h2 className="text-slate-900 font-bold text-xl mb-3">Scan Failed</h2>
+              <p className="text-slate-500 text-sm mb-6">
                 {error || 'Something went wrong. Please try again.'}
               </p>
               <Button variant="primary" onClick={resetScan}>

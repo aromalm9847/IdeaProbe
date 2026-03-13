@@ -48,7 +48,7 @@ const ExpertModal: React.FC<ExpertModalProps> = ({ visible, onClose }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-[70] flex items-center justify-center px-4"
-          style={{ background: 'rgba(5,5,10,0.82)', backdropFilter: 'blur(6px)' }}
+          style={{ background: 'rgba(15,23,42,0.40)', backdropFilter: 'blur(8px)' }}
           onClick={(e) => e.target === e.currentTarget && onClose()}
         >
           <motion.div
@@ -62,13 +62,13 @@ const ExpertModal: React.FC<ExpertModalProps> = ({ visible, onClose }) => {
           >
             <div
               className="relative rounded-2xl overflow-hidden shadow-2xl"
-              style={{ background: 'rgba(10,10,20,0.99)', border: '1px solid rgba(99,102,241,0.25)' }}
+              style={{ background: '#ffffff', border: '1px solid rgba(99,102,241,0.12)', boxShadow: '0 20px 60px rgba(0,0,0,0.10)' }}
             >
               <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899)' }} />
 
               <button
                 onClick={onClose}
-                className="absolute top-3.5 right-3.5 w-7 h-7 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-white/10 transition-all"
+                className="absolute top-3.5 right-3.5 w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
               >
                 <X size={14} />
               </button>
@@ -81,8 +81,8 @@ const ExpertModal: React.FC<ExpertModalProps> = ({ visible, onClose }) => {
                   <WhatsAppIcon />
                 </div>
 
-                <h3 className="text-lg font-bold text-white mb-2">Talk to an Expert</h3>
-                <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">Talk to an Expert</h3>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
                   Your report shows important insights about your business growth opportunities.
                   Connect with our team to understand your report and get a personalized growth strategy.
                 </p>
@@ -101,7 +101,7 @@ const ExpertModal: React.FC<ExpertModalProps> = ({ visible, onClose }) => {
 
                 <button
                   onClick={onClose}
-                  className="w-full py-2 rounded-xl text-xs text-slate-600 hover:text-slate-400 hover:bg-white/5 border border-white/5 transition-all"
+                  className="w-full py-2 rounded-xl text-xs text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-slate-100 transition-all"
                 >
                   Cancel
                 </button>
@@ -137,7 +137,7 @@ const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsu
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-[70] flex items-center justify-center px-4"
-          style={{ background: 'rgba(5,5,10,0.82)', backdropFilter: 'blur(6px)' }}
+          style={{ background: 'rgba(15,23,42,0.40)', backdropFilter: 'blur(8px)' }}
           onClick={(e) => e.target === e.currentTarget && onClose()}
         >
           <motion.div
@@ -163,10 +163,10 @@ const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsu
               </button>
 
               <div className="p-6">
-                <h3 className="text-lg font-bold text-white mb-1 text-center">
+                <h3 className="text-lg font-bold text-slate-900 mb-1 text-center">
                   Your Report is Downloading 🚀
                 </h3>
-                <p className="text-slate-400 text-sm text-center mb-5 leading-relaxed">
+                <p className="text-slate-500 text-sm text-center mb-5 leading-relaxed">
                   Your full report is on the way.<br />
                   Most successful businesses don't just read the report — they turn insights into action.
                   <br /><br />
@@ -179,10 +179,10 @@ const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsu
                     'Identify hidden growth gaps',
                     'Get a clear strategy to scale',
                   ].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
                       <span
                         className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
-                        style={{ background: 'rgba(99,102,241,0.2)', color: '#a5b4fc' }}
+                        style={{ background: 'rgba(99,102,241,0.10)', color: '#6366f1' }}
                       >
                         •
                       </span>
@@ -204,7 +204,7 @@ const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsu
 
                 <button
                   onClick={onClose}
-                  className="w-full py-2 rounded-xl text-xs text-slate-600 hover:text-slate-400 hover:bg-white/5 border border-white/5 transition-all"
+                  className="w-full py-2 rounded-xl text-xs text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-slate-100 transition-all"
                 >
                   Maybe Later
                 </button>
@@ -294,8 +294,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
       {/* Header */}
       <div className="text-center py-6 relative">
         <ScoreGauge score={report.score} verdict={report.verdict} />
-        <p className="text-slate-400 text-sm italic mt-4">"{ideaText}"</p>
-        <p className="text-slate-600 text-xs mt-2">
+        <p className="text-slate-500 text-sm italic mt-4">"{ideaText}"</p>
+        <p className="text-slate-400 text-xs mt-2">
           {report.industry} · Scanned in {report.scan_duration_seconds}s
         </p>
 
@@ -364,7 +364,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
 
       {/* Tab Navigation */}
       <div className="flex gap-1 rounded-xl p-1 overflow-x-auto"
-        style={{ background: 'rgba(10,13,20,0.8)', border: '1px solid rgba(99,102,241,0.15)' }}>
+        style={{ background: '#f8fafc', border: '1px solid rgba(99,102,241,0.12)' }}>
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -372,11 +372,11 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? 'text-white shadow-lg'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
             }`}
             style={activeTab === tab.id ? {
-              background: 'linear-gradient(135deg, rgba(99,102,241,0.8), rgba(139,92,246,0.8))',
-              boxShadow: '0 4px 20px rgba(99,102,241,0.3)',
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              boxShadow: '0 4px 16px rgba(99,102,241,0.25)',
             } : {}}
           >
             <span>{tab.icon}</span>
@@ -397,7 +397,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           {report.refining && <RefinedIdea data={report.refining} />}
 
           <div className="rounded-xl p-5"
-            style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+            style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.20)' }}>
             <p className="text-amber-300 font-semibold text-base">
               ⚠️ Biggest Risk: {report.biggest_risk} ({report.biggest_risk_score}/10)
             </p>
@@ -406,7 +406,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           <div>
             <h3 className="text-white font-semibold text-base mb-3">💡 What's Working</h3>
             <div className="rounded-xl p-5"
-              style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}>
+              style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)' }}>
               <ul className="space-y-2">
                 {report.whats_working.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
@@ -453,7 +453,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           {report.competitors_deep ? (
             <DeepCompetitors data={report.competitors_deep} />
           ) : (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-slate-400">
               <p className="text-4xl mb-3">🔍</p>
               <p>Deep competitor analysis not available for this scan.</p>
             </div>
@@ -502,7 +502,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
             onClick={handleDownloadPDF}
             disabled={pdfLoading}
             className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-all disabled:opacity-60"
-            style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', color: '#a5b4fc' }}
+            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.20)', color: '#6366f1' }}
           >
             {pdfLoading ? (
               <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Generating...</>
