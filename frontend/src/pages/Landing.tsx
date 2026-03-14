@@ -21,10 +21,10 @@ export const Landing: React.FC = () => {
       {/* Final CTA */}
       <section className="py-20 text-center px-4">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             You already know what you want to build.
           </h2>
-          <p className="text-slate-400 text-lg mb-8">
+          <p className="text-slate-500 text-lg mb-8">
             Find out if it'll work — before you spend 6 months finding out the hard way.
           </p>
           <Link to="/app">
@@ -32,7 +32,7 @@ export const Landing: React.FC = () => {
               Scan My Idea Free →
             </Button>
           </Link>
-          <p className="text-slate-600 text-sm mt-4">No credit card. No account. 60 seconds.</p>
+          <p className="text-slate-400 text-sm mt-4">No credit card. No account. 60 seconds.</p>
         </div>
       </section>
     </div>

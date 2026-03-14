@@ -10,11 +10,42 @@ from typing import List
 from schemas import SearchTrend, CompetitorItem
 
 
+INR_TO_USD = 83.0  # 1 USD ≈ ₹83
+
+
 def parse_usd_string(s: str) -> float:
-    """Convert '$1.5B' -> 1_500_000_000, '$150M' -> 150_000_000, '$5M' -> 5_000_000, '$500K' -> 500_000"""
+    """
+    Convert market size strings to USD float for comparison.
+    Handles both USD ('$1.5B', '$150M', '$500K') and
+    INR formats ('₹830 Crore', '₹41 Lakh', '₹8,300 Crore').
+    INR values are converted to USD equivalent (÷83).
+    """
     if not s:
         return 0
+
+    is_inr = "₹" in s or "Crore" in s or "Lakh" in s or "crore" in s or "lakh" in s
     s = s.replace("$", "").replace(",", "").replace("₹", "").strip()
+
+    # Handle Indian units (Crore = 10M, Lakh = 100K)
+    if "Crore" in s or "crore" in s:
+        num_part = s.lower().replace("crore", "").strip()
+        # May have extra words like "8,300 Crore" — take first numeric token
+        tokens = num_part.split()
+        try:
+            val_inr = float(tokens[0]) * 10_000_000
+            return val_inr / INR_TO_USD
+        except (ValueError, IndexError):
+            return 0
+    if "Lakh" in s or "lakh" in s:
+        num_part = s.lower().replace("lakh", "").strip()
+        tokens = num_part.split()
+        try:
+            val_inr = float(tokens[0]) * 100_000
+            return val_inr / INR_TO_USD
+        except (ValueError, IndexError):
+            return 0
+
+    # Handle standard USD suffixes
     if s.endswith("B"):
         try:
             return float(s[:-1]) * 1_000_000_000
@@ -30,8 +61,11 @@ def parse_usd_string(s: str) -> float:
             return float(s[:-1]) * 1_000
         except ValueError:
             return 0
+
+    # Plain number — if INR context, divide by 83
     try:
-        return float(s) if s else 0
+        val = float(s) if s else 0
+        return val / INR_TO_USD if is_inr else val
     except ValueError:
         return 0
 

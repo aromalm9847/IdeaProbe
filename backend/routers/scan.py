@@ -4,6 +4,9 @@ import datetime
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
+from typing import Optional
+from fastapi import Header
+from services.auth_service import get_current_user
 
 from database import get_db
 from schemas import ScanRequest, ScanResponse, ScanStatus, ReportData
@@ -18,6 +21,7 @@ async def create_scan(
     body: ScanRequest,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
+    authorization: Optional[str] = Header(None),
 ):
     # Rate limiting: hash IP, check 5+ scans in last 3600s
     client_ip = request.client.host if request.client else "unknown"
@@ -32,15 +36,24 @@ async def create_scan(
     if count and count >= 5:
         raise HTTPException(status_code=429, detail="Too many scans. Please wait before scanning again.")
 
+    # Get user_id from token if provided
+    user_id = None
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ", 1)[1]
+        user = await get_current_user(db, token)
+        if user:
+            user_id = user.id
+
     # Insert new scan row
     result = await db.execute(
         text(
-            "INSERT INTO scans (idea_text, status, ip_hash, created_at) "
-            "VALUES (:idea_text, 'pending', :ip_hash, :created_at)"
+            "INSERT INTO scans (idea_text, status, ip_hash, user_id, created_at) "
+            "VALUES (:idea_text, 'pending', :ip_hash, :user_id, :created_at)"
         ),
         {
             "idea_text": body.idea_text,
             "ip_hash": ip_hash,
+            "user_id": user_id,
             "created_at": datetime.datetime.utcnow(),
         },
     )

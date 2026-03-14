@@ -17,8 +17,10 @@ api.interceptors.response.use(
   }
 )
 
-export const submitScan = (body: ScanRequest) =>
-  api.post<ScanResponse>('/api/scan', body)
+export const submitScan = (body: ScanRequest, token?: string) =>
+  api.post<ScanResponse>('/api/scan', body, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
 
 export const getScan = (id: number) =>
   api.get<ScanResponse>(`/api/scan/${id}`)

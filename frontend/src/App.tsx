@@ -1,5 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Component } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
+
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state = { error: null }
+  static getDerivedStateFromError(error: Error) { return { error } }
+  render() {
+    if (this.state.error) {
+      const err = this.state.error as Error
+      return (
+        <div style={{ padding: 40, fontFamily: 'monospace', background: '#fff1f0', minHeight: '100vh' }}>
+          <h2 style={{ color: '#c00' }}>Runtime Error</h2>
+          <pre style={{ color: '#900', whiteSpace: 'pre-wrap' }}>{err.message}</pre>
+          <pre style={{ color: '#666', fontSize: 12, marginTop: 16 }}>{err.stack}</pre>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
 import { AuthModal } from './components/auth/AuthModal'
@@ -31,7 +49,7 @@ const NotFound: React.FC = () => (
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <ScrollToTop />
       <Navbar />
       <main>
@@ -50,7 +68,7 @@ function App() {
       </main>
       <Footer />
       <AuthModal />
-    </>
+    </ErrorBoundary>
   )
 }
 

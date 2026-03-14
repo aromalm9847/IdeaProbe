@@ -280,3 +280,4 @@ async def estimate_mrr(idea_text: str, business_model: str, target_market: str) 
             "reasoning": "Estimate based on comparable early-stage Indian businesses in this space.",
             "comparable_examples": ["Similar Indian business at 12 months", "Comparable local service in India", "Related Indian product"],
         }
+    

@@ -14,7 +14,7 @@ interface ScanStore {
   pollingTimeout: ReturnType<typeof setTimeout> | null
 
   setIdea: (text: string) => void
-  submitScan: (idea: string) => Promise<void>
+  submitScan: (idea: string, token?: string) => Promise<void>
   pollScan: () => Promise<void>
   startPolling: () => void
   stopPolling: () => void
@@ -32,10 +32,10 @@ export const useScanStore = create<ScanStore>((set, get) => ({
 
   setIdea: (text) => set({ ideaText: text }),
 
-  submitScan: async (idea) => {
+  submitScan: async (idea, token) => {
     set({ scanStatus: 'pending', ideaText: idea, report: null, error: null })
     try {
-      const res = await apiSubmit({ idea_text: idea })
+      const res = await apiSubmit({ idea_text: idea }, token)
       set({ scanId: res.data.scan_id, scanStatus: 'pending' })
       get().startPolling()
     } catch (e: unknown) {

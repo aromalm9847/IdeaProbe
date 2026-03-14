@@ -28,17 +28,17 @@ export const FeatureGrid: React.FC = () => {
     <section className="py-16 max-w-4xl mx-auto px-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
         {FEATURES.map((f, i) => (
-          <div key={i} className="bg-surface border border-border rounded-xl p-6 hover:border-accent/30 transition-colors">
+          <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 hover:border-indigo-300 hover:shadow-md transition-all shadow-sm">
             <div className="text-3xl mb-3">{f.icon}</div>
-            <h3 className="text-white font-bold text-lg mb-2">{f.title}</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">{f.description}</p>
+            <h3 className="text-slate-900 font-bold text-lg mb-2">{f.title}</h3>
+            <p className="text-slate-500 text-sm leading-relaxed">{f.description}</p>
           </div>
         ))}
       </div>
 
       {/* How it works */}
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">How It Works</h2>
         <p className="text-slate-500 text-sm">Three steps. 60 seconds. No setup.</p>
       </div>
 
@@ -64,22 +64,22 @@ export const FeatureGrid: React.FC = () => {
           },
         ].map((s, i) => (
           <div key={i} className="text-center">
-            <div className="text-5xl font-black text-accent/20 mb-2">{s.step}</div>
+            <div className="text-5xl font-black text-indigo-200 mb-2">{s.step}</div>
             <div className="text-2xl mb-2">{s.icon}</div>
-            <h4 className="text-white font-semibold mb-2">{s.title}</h4>
+            <h4 className="text-slate-900 font-semibold mb-2">{s.title}</h4>
             <p className="text-slate-500 text-sm">{s.desc}</p>
           </div>
         ))}
       </div>
 
       {/* Founder card */}
-      <div className="bg-surface-2 border border-border rounded-xl p-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-lg flex-shrink-0">
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg flex-shrink-0">
           A
         </div>
         <div>
-          <p className="text-white font-semibold text-sm">Alex — Founder of IdeaProbe</p>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-900 font-semibold text-sm">Alex — Founder of IdeaProbe</p>
+          <p className="text-slate-600 text-sm mt-1">
             Built this after wasting 6 months on a product nobody wanted. IdeaProbe is the tool I wish I had before I started.
             Every feature is free because validation should be accessible to every founder.
           </p>

@@ -46,7 +46,7 @@ export const IdeaInput: React.FC<IdeaInputProps> = ({ initialIdea = '', onSubmit
           placeholder="Describe your idea in one sentence... e.g. 'An AI tool that turns Notion pages into client portals'"
           rows={4}
           maxLength={500}
-          className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm resize-none focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all"
+          className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-black placeholder-slate-600 text-sm resize-none focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all"
           autoFocus={!!initialIdea}
         />
         <div className={`text-right text-xs mt-1 ${charColor}`}>
@@ -58,7 +58,7 @@ export const IdeaInput: React.FC<IdeaInputProps> = ({ initialIdea = '', onSubmit
         <button
           onClick={handleRandom}
           type="button"
-          className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-surface-2 border border-transparent hover:border-border"
+          className="text-slate-900 hover:text-black text-sm transition-colors flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-surface-2 border border-transparent hover:border-border"
         >
           ✨ Surprise me
         </button>

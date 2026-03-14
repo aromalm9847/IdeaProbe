@@ -122,10 +122,7 @@ interface DownloadPopupProps {
 }
 
 const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsult }) => {
-  const handleConsult = () => {
-    onClose()
-    onConsult()
-  }
+  const handleConsult = () => { onClose(); onConsult() }
 
   return (
     <AnimatePresence>
@@ -135,77 +132,104 @@ const DownloadPopup: React.FC<DownloadPopupProps> = ({ visible, onClose, onConsu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.25 }}
           className="fixed inset-0 z-[70] flex items-center justify-center px-4"
-          style={{ background: 'rgba(15,23,42,0.40)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(16px)' }}
           onClick={(e) => e.target === e.currentTarget && onClose()}
         >
           <motion.div
             key="dl-card"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.88, y: 28 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 16 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-            className="relative w-full max-w-sm"
+            exit={{ opacity: 0, scale: 0.88, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+            className="relative w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="relative rounded-2xl overflow-hidden shadow-2xl"
-              style={{ background: 'rgba(10,10,20,0.99)', border: '1px solid rgba(99,102,241,0.25)' }}
-            >
-              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899)' }} />
+            {/* Gradient border glow */}
+            <div className="absolute -inset-[1.5px] rounded-[22px] pointer-events-none" style={{
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899, #6366f1)',
+              backgroundSize: '300% 300%',
+              animation: 'gradientShift 4s ease infinite',
+              filter: 'blur(0px)',
+            }} />
 
-              <button
-                onClick={onClose}
-                className="absolute top-3.5 right-3.5 w-7 h-7 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-white/10 transition-all"
-              >
-                <X size={14} />
+            <div className="relative rounded-[20px] overflow-hidden" style={{
+              background: 'rgba(255,255,255,0.97)',
+              backdropFilter: 'blur(40px)',
+              boxShadow: '0 24px 80px rgba(99,102,241,0.18), 0 8px 32px rgba(0,0,0,0.10)',
+            }}>
+              {/* Top progress bar animation */}
+              <div className="h-1 w-full overflow-hidden" style={{ background: 'rgba(99,102,241,0.08)' }}>
+                <motion.div
+                  className="h-full"
+                  style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899)' }}
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 1.8, ease: 'easeOut' }}
+                />
+              </div>
+
+              <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all z-10">
+                <X size={15} />
               </button>
 
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-1 text-center">
-                  Your Report is Downloading 🚀
+              <div className="p-7">
+                {/* Icon */}
+                <div className="flex justify-center mb-5">
+                  <motion.div
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.15 }}
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl"
+                    style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12))', border: '1.5px solid rgba(99,102,241,0.20)' }}
+                  >
+                    🚀
+                  </motion.div>
+                </div>
+
+                <h3 className="text-xl font-bold text-slate-900 mb-1.5 text-center">
+                  Your Report is Downloading
                 </h3>
-                <p className="text-slate-500 text-sm text-center mb-5 leading-relaxed">
+                <p className="text-slate-500 text-sm text-center mb-6 leading-relaxed">
                   Your full report is on the way.<br />
                   Most successful businesses don't just read the report — they turn insights into action.
                   <br /><br />
                   Get expert guidance on how to use your report to grow faster.
                 </p>
 
-                <ul className="space-y-2 mb-6">
+                <ul className="space-y-3 mb-7">
                   {[
-                    'Understand your audience deeply',
-                    'Identify hidden growth gaps',
-                    'Get a clear strategy to scale',
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
-                      <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
-                        style={{ background: 'rgba(99,102,241,0.10)', color: '#6366f1' }}
-                      >
-                        •
+                    { icon: '🎯', text: 'Understand your audience deeply' },
+                    { icon: '🔍', text: 'Identify hidden growth gaps' },
+                    { icon: '📈', text: 'Get a clear strategy to scale' },
+                  ].map((item, i) => (
+                    <motion.li
+                      key={item.text}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + i * 0.08 }}
+                      className="flex items-center gap-3 text-sm text-slate-700"
+                    >
+                      <span className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 text-sm" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                        {item.icon}
                       </span>
-                      {item}
-                    </li>
+                      <span className="font-medium">{item.text}</span>
+                    </motion.li>
                   ))}
                 </ul>
 
-                <button
+                <motion.button
                   onClick={handleConsult}
-                  className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] mb-3"
-                  style={{
-                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    boxShadow: '0 4px 20px rgba(99,102,241,0.4)',
-                  }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-bold text-sm text-white mb-3 relative overflow-hidden"
+                  style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 8px 30px rgba(99,102,241,0.45)' }}
                 >
-                  Talk to Experts
-                </button>
+                  <span className="relative z-10">Talk to Experts →</span>
+                </motion.button>
 
-                <button
-                  onClick={onClose}
-                  className="w-full py-2 rounded-xl text-xs text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-slate-100 transition-all"
-                >
+                <button onClick={onClose} className="w-full py-2.5 rounded-xl text-xs text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-slate-200 transition-all font-medium">
                   Maybe Later
                 </button>
               </div>
@@ -398,18 +422,18 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
 
           <div className="rounded-xl p-5"
             style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.20)' }}>
-            <p className="text-amber-300 font-semibold text-base">
+            <p className="text-amber-700 font-semibold text-base">
               ⚠️ Biggest Risk: {report.biggest_risk} ({report.biggest_risk_score}/10)
             </p>
           </div>
 
           <div>
-            <h3 className="text-white font-semibold text-base mb-3">💡 What's Working</h3>
+            <h3 className="text-slate-900 font-semibold text-base mb-3">💡 What's Working</h3>
             <div className="rounded-xl p-5"
               style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.15)' }}>
               <ul className="space-y-2">
                 {report.whats_working.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
                     <span className="text-green-400 mt-0.5 flex-shrink-0">✅</span>
                     <span>{item}</span>
                   </li>
@@ -419,12 +443,12 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           </div>
 
           <div>
-            <h3 className="text-white font-semibold text-base mb-3">🏆 Competitor Summary</h3>
+            <h3 className="text-slate-900 font-semibold text-base mb-3">🏆 Competitor Summary</h3>
             <CompetitorTable competitors={report.competitors} />
             {report.competitors_deep && (
               <button
                 onClick={() => setActiveTab('competitors')}
-                className="mt-2 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="mt-2 text-xs text-indigo-600 hover:text-indigo-800 transition-colors"
               >
                 → View full competitor deep-dive ↗
               </button>
@@ -432,17 +456,17 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           </div>
 
           <div>
-            <h3 className="text-white font-semibold text-base mb-3">📊 Market Reality</h3>
+            <h3 className="text-slate-900 font-semibold text-base mb-3">📊 Market Reality</h3>
             <MarketReality market={report.market} trends={report.search_trends} />
           </div>
 
           <div>
-            <h3 className="text-white font-semibold text-base mb-3">🛠 Fix Playbook</h3>
+            <h3 className="text-slate-900 font-semibold text-base mb-3">🛠 Fix Playbook</h3>
             <FixPlaybook steps={report.fix_playbook} />
           </div>
 
           <div>
-            <h3 className="text-white font-semibold text-base mb-3">🔍 Data Sources</h3>
+            <h3 className="text-slate-900 font-semibold text-base mb-3">🔍 Data Sources</h3>
             <LiveSources sources={report.sources} />
           </div>
         </motion.div>
@@ -466,7 +490,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           {report.innovation ? (
             <InnovationIdeas data={report.innovation} />
           ) : (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-slate-400">
               <p className="text-4xl mb-3">🚀</p>
               <p>Innovation analysis not available for this scan.</p>
             </div>
@@ -479,7 +503,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
           {report.deep_research ? (
             <DeepResearch data={report.deep_research} />
           ) : (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-slate-400">
               <p className="text-4xl mb-3">📊</p>
               <p>Deep research not available for this scan.</p>
             </div>

@@ -469,8 +469,9 @@ export const AuthModal: React.FC = () => {
                   <>
                     <p className="text-sm text-slate-500">New to IdeaProbe?</p>
                     <button onClick={() => switchMode('register')}
-                      className="mt-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors hover:underline underline-offset-2">
-                      ✨ Create a free account →
+                      className="mt-2 w-full py-3 rounded-xl font-bold text-base text-white transition-all hover:scale-[1.02] active:scale-[0.98]"
+                      style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)', boxShadow: '0 6px 24px rgba(99,102,241,0.4)' }}>
+                      ✨ Create Free Account →
                     </button>
                   </>
                 )}

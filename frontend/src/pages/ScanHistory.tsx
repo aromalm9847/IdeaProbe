@@ -109,7 +109,7 @@ export const ScanHistory: React.FC = () => {
               📋
             </div>
             <div>
-              <h1 className="font-display text-3xl font-bold text-white">Scan History</h1>
+              <h1 className="font-display text-3xl font-bold text-slate-900">Scan History</h1>
               <p className="text-slate-400 text-sm">
                 {user.full_name ? `${user.full_name}'s` : 'Your'} idea validation history
               </p>
@@ -153,7 +153,7 @@ export const ScanHistory: React.FC = () => {
             </div>
             <h3 className="font-display text-xl font-bold text-white mb-2">No scans yet</h3>
             <p className="text-slate-400 mb-6">You haven't validated any ideas yet. Start your first scan!</p>
-            <button onClick={() => navigate('/scanner')} className="btn-premium px-8 py-3 text-sm font-semibold">
+            <button onClick={() => navigate('/app')} className="btn-premium px-8 py-3 text-sm font-semibold">
               Scan Your First Idea →
             </button>
           </motion.div>
@@ -173,7 +173,7 @@ export const ScanHistory: React.FC = () => {
                 onClick={() => navigate(`/scanner?scan_id=${item.scan_id}`)}
                 className="cursor-pointer group rounded-2xl p-5 transition-all hover:scale-[1.01]"
                 style={{
-                  background: 'rgba(15, 15, 30, 0.8)',
+                  background: '#ffffff',
                   border: '1px solid rgba(99,102,241,0.12)',
                   backdropFilter: 'blur(12px)',
                 }}
@@ -193,7 +193,7 @@ export const ScanHistory: React.FC = () => {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-1.5">
-                      <p className="text-white font-medium text-sm leading-snug group-hover:text-indigo-300 transition-colors">
+                      <p className="text-slate-900 font-medium text-sm leading-snug group-hover:text-indigo-300 transition-colors">
                         {truncate(item.idea_text)}
                       </p>
                       {item.verdict && (
@@ -231,7 +231,7 @@ export const ScanHistory: React.FC = () => {
               transition={{ delay: 0.3 }}
               className="text-center pt-6"
             >
-              <button onClick={() => navigate('/scanner')} className="btn-premium px-8 py-3 text-sm font-semibold">
+              <button onClick={() => navigate('/app')} className="btn-premium px-8 py-3 text-sm font-semibold">
                 + Validate a New Idea
               </button>
             </motion.div>

@@ -19,13 +19,13 @@ export const MarketReality: React.FC<MarketRealityProps> = ({ market, trends }) 
       <div className="flex flex-col sm:flex-row items-stretch gap-3 mb-6">
         {cards.map((card, i) => (
           <React.Fragment key={card.label}>
-            <div className={`flex-1 bg-surface-2 border border-border rounded-xl p-4 border-t-2 ${card.color}`}>
+            <div className={`flex-1 bg-white rounded-xl p-4 border-t-2 ${card.color}`}>
               <div className="text-xs text-slate-500 font-medium mb-1">{card.label}</div>
-              <div className="text-2xl font-bold text-white mb-1">{card.value}</div>
-              <div className="text-xs text-slate-400 leading-relaxed">{card.explanation}</div>
+              <div className="text-2xl font-bold text-slate-900 mb-1">{card.value}</div>
+              <div className="text-xs text-slate-500 leading-relaxed">{card.explanation}</div>
             </div>
             {i < cards.length - 1 && (
-              <div className="hidden sm:flex items-center text-slate-600 text-xl font-light">→</div>
+              <div className="hidden sm:flex items-center text-slate-300 text-xl font-light">→</div>
             )}
           </React.Fragment>
         ))}
@@ -39,8 +39,8 @@ export const MarketReality: React.FC<MarketRealityProps> = ({ market, trends }) 
               key={i}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${
                 trend.is_rising
-                  ? 'bg-green-500/10 text-green-400 border-green-500/30'
-                  : 'bg-red-500/10 text-red-400 border-red-500/30'
+                  ? 'text-green-700 border-green-200 bg-green-50'
+                  : 'text-red-700 border-red-200 bg-red-50'
               }`}
             >
               <span>{trend.is_rising ? '↑' : '↓'}</span>

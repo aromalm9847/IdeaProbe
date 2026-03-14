@@ -67,7 +67,7 @@ export const ScanProgress: React.FC<ScanProgressProps> = ({ ideaText }) => {
                 <span className="text-slate-700">○</span>
               )}
             </span>
-            <span className={stage.done ? 'text-slate-400 line-through' : stage.active ? 'text-white' : 'text-slate-600'}>
+            <span className={stage.done ? 'text-slate-400 line-through' : stage.active ? 'text-slate-900 font-medium' : 'text-slate-500'}>
               {stage.label}
             </span>
           </div>

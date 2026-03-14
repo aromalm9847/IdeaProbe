@@ -13,13 +13,13 @@ export const DemoReport: React.FC = () => {
   return (
     <section className="py-16 max-w-4xl mx-auto px-4">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-white mb-3">Everything holding you back. And how to fix it.</h2>
+        <h2 className="text-3xl font-bold text-slate-900 mb-3">Everything holding you back. And how to fix it.</h2>
         <p className="text-slate-400">Every section below is included in your free report.</p>
       </div>
 
-      <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 space-y-6">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6">
         {/* Score */}
-        <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-border">
+        <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-200">
           <div className="text-center">
             <div className="text-6xl font-bold text-green-400">84</div>
             <div className="text-slate-500 text-sm">/100</div>
@@ -31,16 +31,16 @@ export const DemoReport: React.FC = () => {
         </div>
 
         {/* Biggest risk */}
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-          <p className="text-amber-300 font-semibold text-sm">⚠️ Biggest Risk: Easy to copy once validated (6.4/10)</p>
+        <div className="border border-amber-200 bg-amber-50 rounded-xl p-4">
+          <p className="text-amber-700 font-semibold text-sm">⚠️ Biggest Risk: Easy to copy once validated (6.4/10)</p>
         </div>
 
         {/* What's working */}
-        <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-4">
-          <h4 className="text-white font-semibold text-sm mb-3">💡 What's Working</h4>
+        <div className="border border-green-100 bg-green-50 rounded-xl p-4">
+          <h4 className="text-slate-900 font-semibold text-sm mb-3">💡 What's Working</h4>
           <ul className="space-y-2">
             {['Strong demand from agencies managing 5+ clients in Notion', 'No direct competitor with native Notion integration', 'Clear B2B pricing model with high retention potential'].map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
                 <span className="text-green-400 flex-shrink-0">✅</span>
                 <span>{item}</span>
               </li>
@@ -50,11 +50,11 @@ export const DemoReport: React.FC = () => {
 
         {/* Competitor table */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-3">🏆 Competitor Intel</h4>
-          <div className="overflow-x-auto rounded-xl border border-border">
+          <h4 className="text-slate-900 font-semibold text-sm mb-3">🏆 Competitor Intel</h4>
+          <div className="overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-xs">
               <thead>
-                <tr className="bg-surface-2 border-b border-border">
+                <tr className="bg-slate-50 border-b border-slate-200">
                   <th className="text-left px-3 py-2.5 text-slate-400 font-medium">Competitor</th>
                   <th className="text-left px-3 py-2.5 text-slate-400 font-medium">Pricing</th>
                   <th className="text-left px-3 py-2.5 text-slate-400 font-medium">Weakness</th>
@@ -63,11 +63,11 @@ export const DemoReport: React.FC = () => {
               </thead>
               <tbody>
                 {DEMO_COMPETITORS.map((c, i) => (
-                  <tr key={i} className="border-b border-border last:border-b-0 bg-surface">
-                    <td className="px-3 py-2.5 text-white font-medium">{c.name}</td>
-                    <td className="px-3 py-2.5 text-slate-300">{c.pricing}</td>
+                  <tr key={i} className="border-b border-slate-200 last:border-b-0 bg-white">
+                    <td className="px-3 py-2.5 text-slate-900 font-medium">{c.name}</td>
+                    <td className="px-3 py-2.5 text-slate-600">{c.pricing}</td>
                     <td className="px-3 py-2.5 text-slate-400">{c.weakness}</td>
-                    <td className="px-3 py-2.5 text-slate-300">💡 {c.your_fix}</td>
+                    <td className="px-3 py-2.5 text-slate-600">💡 {c.your_fix}</td>
                   </tr>
                 ))}
               </tbody>
@@ -77,16 +77,16 @@ export const DemoReport: React.FC = () => {
 
         {/* Market sizing */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-3">📊 Market Reality</h4>
+          <h4 className="text-slate-900 font-semibold text-sm mb-3">📊 Market Reality</h4>
           <div className="flex flex-col sm:flex-row gap-3">
             {[
               { label: 'TAM', value: '$1.5B', color: 'border-accent' },
               { label: 'SAM', value: '$150M', color: 'border-cyan-400' },
               { label: 'SOM', value: '$5M', color: 'border-green-400' },
             ].map((m, i) => (
-              <div key={i} className={`flex-1 bg-surface-2 border border-border border-t-2 ${m.color} rounded-xl p-3 text-center`}>
+              <div key={i} className={`flex-1 bg-slate-50 border border-slate-200 border-t-2 ${m.color} rounded-xl p-3 text-center`}>
                 <div className="text-slate-500 text-xs mb-1">{m.label}</div>
-                <div className="text-white font-bold text-xl">{m.value}</div>
+                <div className="text-slate-900 font-bold text-xl">{m.value}</div>
               </div>
             ))}
           </div>
@@ -94,7 +94,7 @@ export const DemoReport: React.FC = () => {
 
         {/* Fix playbook */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-3">🛠 Fix Playbook</h4>
+          <h4 className="text-slate-900 font-semibold text-sm mb-3">🛠 Fix Playbook</h4>
           <div className="space-y-2">
             {[
               'Step 1: Build a Notion integration that auto-detects page structure',
@@ -103,9 +103,9 @@ export const DemoReport: React.FC = () => {
               'Step 4: Launch in Notion creator communities on Reddit and Twitter',
               'Step 5: Build a template gallery to drive organic SEO traffic',
             ].map((step, i) => (
-              <div key={i} className="flex items-start gap-3 bg-surface-2 border border-border rounded-xl p-3">
-                <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white font-bold text-xs flex-shrink-0">{i + 1}</div>
-                <p className="text-slate-300 text-xs pt-0.5">{step}</p>
+              <div key={i} className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-slate-900 font-bold text-xs flex-shrink-0">{i + 1}</div>
+                <p className="text-slate-600 text-xs pt-0.5">{step}</p>
               </div>
             ))}
           </div>
@@ -113,7 +113,7 @@ export const DemoReport: React.FC = () => {
 
         {/* Live sources */}
         <div>
-          <h4 className="text-white font-semibold text-sm mb-3">🔍 Data Sources</h4>
+          <h4 className="text-slate-900 font-semibold text-sm mb-3">🔍 Data Sources</h4>
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
             {[
               { icon: '🟠', name: 'Reddit', count: 18 },
@@ -122,9 +122,9 @@ export const DemoReport: React.FC = () => {
               { icon: '🚀', name: 'Indie Hackers', count: 5 },
               { icon: '🔵', name: 'Quora', count: 4 },
             ].map((s, i) => (
-              <div key={i} className="bg-surface-2 border border-border rounded-xl p-2 text-center">
+              <div key={i} className="bg-slate-50 border border-slate-200 rounded-xl p-2 text-center">
                 <div className="text-lg">{s.icon}</div>
-                <div className="text-white text-xs font-medium mt-1">{s.name}</div>
+                <div className="text-slate-900 text-xs font-medium mt-1">{s.name}</div>
                 <div className="text-slate-500 text-xs">{s.count} signals</div>
               </div>
             ))}

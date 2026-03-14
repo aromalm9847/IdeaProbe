@@ -44,7 +44,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, verdict }) => {
           <path
             d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
             fill="none"
-            stroke="#1e1e2e"
+            stroke="#e2e8f0"
             strokeWidth="12"
             strokeLinecap="round"
           />
@@ -59,7 +59,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, verdict }) => {
             style={{ transition: 'stroke-dasharray 0.05s ease-out, stroke 0.3s ease' }}
           />
           {/* Score text */}
-          <text x={cx} y={cy - 10} textAnchor="middle" fill="white" fontSize="36" fontWeight="bold" fontFamily="Inter, sans-serif">
+          <text x={cx} y={cy - 10} textAnchor="middle" fill="#0f172a" fontSize="36" fontWeight="bold" fontFamily="Inter, sans-serif">
             {displayScore}
           </text>
           <text x={cx} y={cy + 12} textAnchor="middle" fill="#64748b" fontSize="14" fontFamily="Inter, sans-serif">

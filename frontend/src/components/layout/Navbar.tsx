@@ -62,9 +62,6 @@ export const Navbar: React.FC = () => {
                   <Link to="/app" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" onClick={() => setToolsOpen(false)}>
                     <span>🔍</span> Idea Scanner
                   </Link>
-                  <Link to="/tools/mrr-revenue-estimator" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" onClick={() => setToolsOpen(false)}>
-                    <span>💰</span> MRR Estimator
-                  </Link>
                   <Link to="/examples" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" onClick={() => setToolsOpen(false)}>
                     <span>📋</span> Examples
                   </Link>
@@ -151,7 +148,6 @@ export const Navbar: React.FC = () => {
         {mobileOpen && (
           <div className="md:hidden py-4 space-y-1 border-t border-slate-100">
             <Link to="/app" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>🔍 Idea Scanner</Link>
-            <Link to="/tools/mrr-revenue-estimator" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>💰 MRR Estimator</Link>
             <Link to="/examples" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>📋 Examples</Link>
             <Link to="/about" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>About</Link>
             <Link to="/blog" className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>Blog</Link>

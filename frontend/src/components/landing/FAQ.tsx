@@ -34,17 +34,17 @@ export const FAQ: React.FC = () => {
   return (
     <section className="py-16 max-w-2xl mx-auto px-4">
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-bold text-white mb-2">Frequently Asked Questions</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Frequently Asked Questions</h2>
       </div>
 
       <div className="space-y-2">
         {FAQS.map((faq, i) => (
-          <div key={i} className="bg-surface border border-border rounded-xl overflow-hidden">
+          <div key={i} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
             <button
-              className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-surface-2 transition-colors"
+              className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors"
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
             >
-              <span className="text-white font-medium text-sm">{faq.q}</span>
+              <span className="text-slate-900 font-medium text-sm">{faq.q}</span>
               <motion.span
                 animate={{ rotate: openIndex === i ? 180 : 0 }}
                 transition={{ duration: 0.2 }}
@@ -62,7 +62,7 @@ export const FAQ: React.FC = () => {
                   transition={{ duration: 0.25 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-5 pb-4 text-slate-400 text-sm leading-relaxed border-t border-border pt-3">
+                  <div className="px-5 pb-4 text-slate-600 text-sm leading-relaxed border-t border-slate-200 pt-3">
                     {faq.a}
                   </div>
                 </motion.div>
