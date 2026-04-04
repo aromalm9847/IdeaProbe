@@ -12,6 +12,7 @@ class User(Base):
     full_name = Column(Text, nullable=True)
     hashed_password = Column(Text, nullable=True)                      # nullable: OTP-only users
     is_active = Column(Boolean, default=True)
+    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     last_login = Column(DateTime, nullable=True)
 

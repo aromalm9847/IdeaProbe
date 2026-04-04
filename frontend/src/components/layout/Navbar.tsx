@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
+import { useScanStore } from '../../store/useScanStore'
 
 export const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -8,7 +9,17 @@ export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, openAuthModal, logout } = useAuthStore()
+  const { resetScan } = useScanStore()
+
+  const handleLogout = () => {
+    resetScan()
+    logout()
+    setUserMenuOpen(false)
+    setMobileOpen(false)
+    navigate('/')
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -40,10 +51,7 @@ export const Navbar: React.FC = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 4px 14px rgba(99,102,241,0.30)' }}>
-              <span className="text-sm">⚡</span>
-            </div>
+            <img src="/favicon.svg" alt="IdeaProbe" className="w-8 h-8 transition-all duration-300 group-hover:scale-110" style={{ borderRadius: '10px' }} />
             <span className="font-display font-bold text-lg text-slate-900 tracking-tight">IdeaProbe</span>
           </Link>
 
@@ -108,7 +116,7 @@ export const Navbar: React.FC = () => {
                     <Link to="/history" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
                       📋 Scan History
                     </Link>
-                    <button onClick={() => { logout(); setUserMenuOpen(false) }} className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                       Sign out
                     </button>
                   </div>
@@ -155,7 +163,7 @@ export const Navbar: React.FC = () => {
               {user ? (
                 <>
                   <Link to="/history" onClick={() => setMobileOpen(false)} className="block w-full text-center py-2.5 text-sm text-slate-600 border border-slate-200 rounded-xl">📋 Scan History</Link>
-                  <button onClick={() => { logout(); setMobileOpen(false) }} className="w-full py-2.5 text-sm text-red-500 border border-red-200 rounded-xl">Sign out</button>
+                  <button onClick={handleLogout} className="w-full py-2.5 text-sm text-red-500 border border-red-200 rounded-xl">Sign out</button>
                 </>
               ) : (
                 <>

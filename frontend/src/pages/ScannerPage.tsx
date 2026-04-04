@@ -55,7 +55,7 @@ export const ScannerPage: React.FC = () => {
           <motion.div key='error' initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className='flex flex-col items-center justify-center min-h-[80vh] px-4 text-center'>
             <div className='bg-white border border-red-100 rounded-2xl p-8 max-w-md' style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
-              <div className='text-4xl mb-4'>Warning</div>
+              <div className='text-4xl mb-4'>⚠️</div>
               <h2 className='text-slate-900 font-bold text-xl mb-3'>Scan Failed</h2>
               <p className='text-slate-500 text-sm mb-6'>{error || 'Something went wrong. Please try again.'}</p>
               <Button variant='primary' onClick={resetScan}>Try again</Button>

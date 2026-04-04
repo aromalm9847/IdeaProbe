@@ -8,7 +8,7 @@ load_dotenv()
 
 import models  # noqa: F401 — must import before init_db to register all ORM models
 from database import init_db
-from routers import scan, leaderboard, mrr, examples, auth, pdf
+from routers import scan, leaderboard, mrr, examples, auth, pdf, admin
 
 
 @asynccontextmanager
@@ -22,7 +22,7 @@ app = FastAPI(title="IdeaProbe API", version="3.0.0", lifespan=lifespan)  # v3: 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -33,6 +33,7 @@ app.include_router(mrr.router, prefix="/api")
 app.include_router(examples.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 app.include_router(pdf.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
 
 
 @app.get("/")

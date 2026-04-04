@@ -9,10 +9,7 @@ export const Footer: React.FC = () => {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 font-bold text-xl mb-3">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
-                style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
-                ⚡
-              </div>
+              <img src="/favicon.svg" alt="IdeaProbe" className="w-7 h-7" style={{ borderRadius: '8px' }} />
               <span className="text-slate-900">IdeaProbe</span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed">
@@ -25,7 +22,6 @@ export const Footer: React.FC = () => {
             <h4 className="text-slate-800 font-semibold text-sm mb-4">Tools</h4>
             <ul className="space-y-2">
               <li><Link to="/app" className="text-slate-400 hover:text-slate-700 text-sm transition-colors">Idea Scanner</Link></li>
-              <li><Link to="/tools/mrr-revenue-estimator" className="text-slate-400 hover:text-slate-700 text-sm transition-colors">MRR Estimator</Link></li>
               <li><Link to="/examples" className="text-slate-400 hover:text-slate-700 text-sm transition-colors">Examples</Link></li>
             </ul>
           </div>

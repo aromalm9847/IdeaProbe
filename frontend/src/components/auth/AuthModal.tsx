@@ -307,7 +307,7 @@ export const AuthModal: React.FC = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="relative w-full max-w-md mx-4"
+          className="relative w-full max-w-sm mx-4"
         >
           {/* Glow */}
           <div className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl"
@@ -320,14 +320,14 @@ export const AuthModal: React.FC = () => {
             {/* Header bar */}
             <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899)' }} />
 
-            <div className="p-8">
+            <div className="p-6">
               {/* Logo + title */}
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
+              <div className="text-center mb-5">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3"
                   style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12))', border: '1px solid rgba(99,102,241,0.2)' }}>
-                  <span className="text-2xl">🔍</span>
+                  <span className="text-lg">🔍</span>
                 </div>
-                <h2 className="font-display text-2xl font-bold text-slate-900">{titles[mode].title}</h2>
+                <h2 className="font-display text-xl font-bold text-slate-900">{titles[mode].title}</h2>
                 <p className="text-slate-500 text-sm mt-1">{titles[mode].subtitle}</p>
               </div>
 
@@ -451,7 +451,7 @@ export const AuthModal: React.FC = () => {
               )}
 
               {/* ── DIVIDER + GUEST ── */}
-              <div className="flex items-center gap-3 my-5">
+              <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px bg-slate-100" />
                 <span className="text-xs text-slate-400">or</span>
                 <div className="flex-1 h-px bg-slate-100" />
@@ -463,7 +463,7 @@ export const AuthModal: React.FC = () => {
               </button>
 
               {/* ── SWITCH MODE ── */}
-              <div className="mt-5 rounded-xl p-3 text-center"
+              <div className="mt-4 rounded-xl p-3 text-center"
                 style={{ background: 'rgba(99,102,241,0.04)', border: '1px solid rgba(99,102,241,0.10)' }}>
                 {mode === 'login' && (
                   <>

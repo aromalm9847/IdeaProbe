@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -54,6 +54,66 @@ const Particle: React.FC<{ x: number; y: number; size: number; color: string; de
   />
 )
 
+// Animated premium lightbulb
+const IdeaBulb: React.FC = () => (
+  <motion.div
+    className="relative flex items-center justify-center"
+    animate={{ y: [0, -8, 0] }}
+    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+  >
+    {/* Outer glow ring */}
+    <motion.div
+      className="absolute rounded-full"
+      style={{ width: 80, height: 80, background: 'radial-gradient(circle, rgba(99,102,241,0.18), rgba(139,92,246,0.10), transparent 70%)' }}
+      animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+    />
+    {/* Inner soft halo */}
+    <motion.div
+      className="absolute rounded-full"
+      style={{ width: 52, height: 52, background: 'radial-gradient(circle, rgba(234,179,8,0.22), rgba(99,102,241,0.12), transparent 70%)' }}
+      animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+    />
+    {/* Bulb SVG */}
+    <motion.svg
+      width="38" height="38" viewBox="0 0 24 24" fill="none"
+      animate={{ filter: ['drop-shadow(0 0 4px rgba(234,179,8,0.5))', 'drop-shadow(0 0 12px rgba(234,179,8,0.9)) drop-shadow(0 0 20px rgba(99,102,241,0.5))', 'drop-shadow(0 0 4px rgba(234,179,8,0.5))'] }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      {/* Bulb body */}
+      <motion.path
+        d="M9 21h6M10 17.5c-.5-1-1.5-2-2-3.5a5 5 0 1 1 8 0c-.5 1.5-1.5 2.5-2 3.5H10z"
+        stroke="url(#bulbGrad)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        animate={{ stroke: ['url(#bulbGrad)', 'url(#bulbGradBright)', 'url(#bulbGrad)'] }}
+        transition={{ duration: 2.5, repeat: Infinity }}
+      />
+      {/* Filament lines */}
+      <path d="M10 17.5h4" stroke="url(#bulbGrad)" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Shine sparkle dots */}
+      <motion.circle cx="17.5" cy="7" r="0.8" fill="rgba(234,179,8,0.9)"
+        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }} />
+      <motion.circle cx="19" cy="11" r="0.6" fill="rgba(99,102,241,0.8)"
+        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+        transition={{ duration: 2, repeat: Infinity, delay: 1 }} />
+      <motion.circle cx="5.5" cy="8" r="0.7" fill="rgba(139,92,246,0.8)"
+        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+        transition={{ duration: 2, repeat: Infinity, delay: 0.8 }} />
+      <defs>
+        <linearGradient id="bulbGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#eab308" />
+          <stop offset="100%" stopColor="#6366f1" />
+        </linearGradient>
+        <linearGradient id="bulbGradBright" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fde68a" />
+          <stop offset="100%" stopColor="#a5b4fc" />
+        </linearGradient>
+      </defs>
+    </motion.svg>
+  </motion.div>
+)
+
 // Subtle grid for light bg
 const GridBackground: React.FC = () => (
   <div className="absolute inset-0 pointer-events-none" style={{
@@ -69,14 +129,15 @@ export const Hero: React.FC = () => {
   const navigate = useNavigate()
   const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS]
 
-  const particles = Array.from({ length: 18 }, (_, i) => ({
+  // Memoized so they don't regenerate on every keystroke re-render
+  const particles = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
     id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
+    x: (i * 37 + 11) % 100,
+    y: (i * 53 + 7) % 100,
+    size: (i % 3) + 1.5,
     color: i % 3 === 0 ? 'rgba(99,102,241,0.5)' : i % 3 === 1 ? 'rgba(139,92,246,0.5)' : 'rgba(236,72,153,0.4)',
-    delay: Math.random() * 5,
-  }))
+    delay: (i * 0.6) % 5,
+  })), [])
 
   const handleRandom = () => {
     const next = (presetIndex + 1) % PRESET_IDEAS.length
@@ -117,6 +178,11 @@ export const Hero: React.FC = () => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-48px)] px-4 max-w-5xl mx-auto py-16">
+
+        {/* Idea Bulb */}
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, type: 'spring', stiffness: 200 }} className="mb-6">
+          <IdeaBulb />
+        </motion.div>
 
         {/* Badge */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex items-center gap-2 mb-8">

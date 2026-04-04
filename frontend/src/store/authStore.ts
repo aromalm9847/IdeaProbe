@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>()(
       setGuest: (v) => set({ isGuest: v }),
       openAuthModal: (mode = 'login') => set({ isAuthModalOpen: true, authModalMode: mode }),
       closeAuthModal: () => set({ isAuthModalOpen: false }),
-      logout: () => set({ user: null, isGuest: false }),
+      logout: () => set({ user: null, isGuest: false, isAuthModalOpen: false }),
     }),
     {
       name: 'ideaprobe-auth',

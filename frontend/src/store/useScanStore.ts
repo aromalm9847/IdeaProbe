@@ -1,5 +1,16 @@
 import { create } from 'zustand'
+import axios from 'axios'
 import { submitScan as apiSubmit, getScan } from '../api/client'
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+
+async function wakeupBackend() {
+  try {
+    await axios.get(`${API_BASE}/health`, { timeout: 60_000 })
+  } catch {
+    // ignore — just warming up the server
+  }
+}
 import type { ReportData } from '../types'
 
 type ScanStatus = 'idle' | 'pending' | 'processing' | 'complete' | 'failed'
@@ -34,6 +45,7 @@ export const useScanStore = create<ScanStore>((set, get) => ({
 
   submitScan: async (idea, token) => {
     set({ scanStatus: 'pending', ideaText: idea, report: null, error: null })
+    await wakeupBackend()
     try {
       const res = await apiSubmit({ idea_text: idea }, token)
       set({ scanId: res.data.scan_id, scanStatus: 'pending' })

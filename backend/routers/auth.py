@@ -3,9 +3,10 @@ Auth Router — Register, Login, OTP, Forgot Password, Scan History.
 Supports email+password, phone+password, OTP login, and password reset via OTP.
 """
 
+import hashlib
 import json
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -75,7 +76,7 @@ class ResetPasswordRequest(BaseModel):
 # ── Registration ──────────────────────────────────────────────────────────────
 
 @router.post("/register")
-async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
+async def register(request: Request, req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     """Register a new user with email and/or phone + password."""
     result = await register_user(
         db,
@@ -86,17 +87,57 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     )
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+
+    # Retroactively link scans from the last 2 hours from this IP (session scans only)
+    user_id = result.get("user_id")
+    if user_id:
+        try:
+            import datetime as dt
+            client_ip = request.client.host if request.client else "unknown"
+            ip_hash = hashlib.sha256(client_ip.encode()).hexdigest()
+            session_cutoff = dt.datetime.utcnow() - dt.timedelta(hours=2)
+            await db.execute(
+                text(
+                    "UPDATE scans SET user_id = :uid "
+                    "WHERE user_id IS NULL AND ip_hash = :ip AND created_at > :cutoff"
+                ),
+                {"uid": user_id, "ip": ip_hash, "cutoff": session_cutoff},
+            )
+            await db.commit()
+        except Exception:
+            pass
+
     return result
 
 
 # ── Login (email or phone + password) ────────────────────────────────────────
 
 @router.post("/login")
-async def login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(request: Request, req: LoginRequest, db: AsyncSession = Depends(get_db)):
     """Login with email or phone number + password."""
     result = await login_user(db, req.identifier, req.password)
     if "error" in result:
         raise HTTPException(status_code=401, detail=result["error"])
+
+    # Retroactively link scans from the last 2 hours from this IP (session scans only)
+    user_id = result.get("user_id")
+    if user_id:
+        try:
+            import datetime as dt
+            client_ip = request.client.host if request.client else "unknown"
+            ip_hash = hashlib.sha256(client_ip.encode()).hexdigest()
+            session_cutoff = dt.datetime.utcnow() - dt.timedelta(hours=2)
+            await db.execute(
+                text(
+                    "UPDATE scans SET user_id = :uid "
+                    "WHERE user_id IS NULL AND ip_hash = :ip AND created_at > :cutoff"
+                ),
+                {"uid": user_id, "ip": ip_hash, "cutoff": session_cutoff},
+            )
+            await db.commit()
+        except Exception:
+            pass
+
     return result
 
 

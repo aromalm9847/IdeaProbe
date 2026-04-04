@@ -46,7 +46,7 @@ export const ScanHistory: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-      openAuthModal('login')
+      navigate('/')
       return
     }
     fetchHistory()

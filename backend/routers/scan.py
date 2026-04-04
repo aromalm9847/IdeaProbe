@@ -23,20 +23,10 @@ async def create_scan(
     db: AsyncSession = Depends(get_db),
     authorization: Optional[str] = Header(None),
 ):
-    # Rate limiting: hash IP, check 5+ scans in last 3600s
     client_ip = request.client.host if request.client else "unknown"
     ip_hash = hashlib.sha256(client_ip.encode()).hexdigest()
 
-    cutoff = datetime.datetime.utcnow() - datetime.timedelta(seconds=3600)
-    result = await db.execute(
-        text("SELECT COUNT(*) FROM scans WHERE ip_hash=:ip_hash AND created_at > :cutoff"),
-        {"ip_hash": ip_hash, "cutoff": cutoff},
-    )
-    count = result.scalar()
-    if count and count >= 5:
-        raise HTTPException(status_code=429, detail="Too many scans. Please wait before scanning again.")
-
-    # Get user_id from token if provided
+    # Resolve user from token to link scan to account (no limits)
     user_id = None
     if authorization and authorization.startswith("Bearer "):
         token = authorization.split(" ", 1)[1]
@@ -48,7 +38,7 @@ async def create_scan(
     result = await db.execute(
         text(
             "INSERT INTO scans (idea_text, status, ip_hash, user_id, created_at) "
-            "VALUES (:idea_text, 'pending', :ip_hash, :user_id, :created_at)"
+            "VALUES (:idea_text, 'pending', :ip_hash, :user_id, :created_at) RETURNING id"
         ),
         {
             "idea_text": body.idea_text,
@@ -58,7 +48,7 @@ async def create_scan(
         },
     )
     await db.commit()
-    scan_id = result.lastrowid
+    scan_id = result.scalar()
 
     # Launch background pipeline
     background_tasks.add_task(pipeline.run_full_scan, scan_id, body.idea_text)

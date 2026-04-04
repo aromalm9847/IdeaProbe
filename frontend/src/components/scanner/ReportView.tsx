@@ -15,7 +15,7 @@ import DeepResearch from './DeepResearch'
 import { useScanStore } from '../../store/useScanStore'
 import { useAuthStore } from '../../store/authStore'
 
-const API = import.meta.env.VITE_API_BASE_URL || 'https://backend-production-603e.up.railway.app'
+const API = import.meta.env.VITE_API_BASE_URL || ''
 
 const WHATSAPP_URL =
   'https://wa.me/9035514817?text=Hi%20I%20just%20downloaded%20my%20IdeaProbe%20report%20and%20would%20like%20a%20business%20consultation'
@@ -514,22 +514,23 @@ export const ReportView: React.FC<ReportViewProps> = ({ report, ideaText, onRese
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 pt-4 pb-8">
         {onReset && (
-          <Button variant="secondary" size="md" onClick={onReset} className="flex-1">
-            ↩ Scan another idea
-          </Button>
+          <button
+            onClick={onReset}
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+          >
+            ⚡ Scan Another Idea
+          </button>
         )}
-        <Button variant="secondary" size="md" onClick={handleShare} className="flex-1">
-          {copied ? '✓ Copied!' : '🔗 Share this report'}
-        </Button>
         {scanId && (
           <button
             onClick={handleDownloadPDF}
             disabled={pdfLoading}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-all disabled:opacity-60"
-            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.20)', color: '#6366f1' }}
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.30)', color: '#6366f1' }}
           >
             {pdfLoading ? (
-              <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Generating...</>
+              <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Generating PDF...</>
             ) : (
               <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg> Download PDF</>
             )}

@@ -275,7 +275,28 @@ async def run_full_scan(scan_id: int, idea_text: str):
                 "tam_usd": insights.get("tam_usd", "$0"),
                 "som_usd": insights.get("som_usd", "$0"),
             }
-            score = calculate_score(trends, market_data, reddit_signals, compact_competitors)
+
+            # Extract GPT viability score from refining agent (1-10 scale)
+            viability_score = None
+            if refining_output and refining_output.feasibility:
+                viability_score = refining_output.feasibility.viability_score
+
+            # Calculate innovation quality from innovation agent (avg feasibility+impact per idea)
+            innovation_quality = None
+            if innovation_output and innovation_output.ideas:
+                scores = [(i.feasibility + i.impact) / 2.0 for i in innovation_output.ideas]
+                innovation_quality = sum(scores) / len(scores)
+
+            score = calculate_score(
+                trends, market_data, reddit_signals, compact_competitors,
+                web_signals=web_signals,
+                viability_score=viability_score,
+                innovation_quality=innovation_quality,
+                refining_output=refining_output,
+                competitors_deep=competitors_deep_output,
+                innovation_output=innovation_output,
+                deep_research=deep_research_output,
+            )
             verdict = get_verdict(score)
 
             # ── Stage 7: Build fix playbook ───────────────────────────────────

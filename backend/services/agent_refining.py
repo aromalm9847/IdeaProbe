@@ -88,7 +88,7 @@ CRITICAL REQUIREMENTS:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=0.2,
+            temperature=0.6,
             max_tokens=2500,
         )
         raw = resp.choices[0].message.content

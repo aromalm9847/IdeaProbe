@@ -24,10 +24,10 @@ import { AuthModal } from './components/auth/AuthModal'
 import { Landing } from './pages/Landing'
 import { ScannerPage } from './pages/ScannerPage'
 import { Examples, ExampleDetail } from './pages/Examples'
-import { MRREstimator } from './pages/MRREstimator'
 import { Blog, BlogPost } from './pages/Blog'
 import { About } from './pages/About'
 import { ScanHistory } from './pages/ScanHistory'
+import { AdminPage } from './pages/AdminPage'
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation()
@@ -58,11 +58,11 @@ function App() {
           <Route path="/app" element={<ScannerPage />} />
           <Route path="/examples" element={<Examples />} />
           <Route path="/examples/:slug" element={<ExampleDetail />} />
-          <Route path="/tools/mrr-revenue-estimator" element={<MRREstimator />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/about" element={<About />} />
           <Route path="/history" element={<ScanHistory />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
