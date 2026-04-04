@@ -5,7 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./ideaprobe.db")
+_raw_url = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./ideaprobe.db")
+
+# Railway injects postgres:// or postgresql:// — SQLAlchemy async needs postgresql+asyncpg://
+if _raw_url.startswith("postgres://"):
+    _raw_url = _raw_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif _raw_url.startswith("postgresql://") and "+asyncpg" not in _raw_url:
+    _raw_url = _raw_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+DATABASE_URL = _raw_url
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 
