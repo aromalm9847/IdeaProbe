@@ -397,6 +397,31 @@ canvas {
   font-family: 'Space Grotesk', 'Inter', sans-serif;
 }
 
+/* ─── Mobile performance ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Kill backdrop-filter — #1 cause of mobile GPU lag */
+  .glass, .glass-strong, .glass-card, .modal-overlay {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .glass { background: rgba(255,255,255,0.97) !important; }
+  .glass-strong { background: rgba(255,255,255,0.99) !important; }
+  .glass-card { background: #ffffff !important; }
+  .modal-overlay { background: rgba(15,23,42,0.6) !important; }
+
+  /* Kill expensive looping animations */
+  .holographic { animation: none !important; }
+  .scan-line::after { animation: none !important; }
+  .animate-pulse-glow { animation: none !important; }
+  .particle { animation: none !important; opacity: 0 !important; }
+
+  /* Promote ticker to GPU layer to avoid jank */
+  .animate-ticker {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+}
+
 /* ─── Responsive fixes ────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .glass-card:hover {

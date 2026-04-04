@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -38,6 +38,7 @@ const GlowOrb: React.FC<{
       width: size, height: size, left: x, top: y,
       background: `radial-gradient(circle, ${color}, transparent 70%)`,
       filter: 'blur(60px)', opacity: 0,
+      willChange: 'transform, opacity',
     }}
     animate={{ opacity: [0, 0.12, 0.06, 0.14, 0], scale: [0.8, 1.2, 0.9, 1.1, 0.8], x: [0, 30, -20, 15, 0], y: [0, -25, 20, -10, 0] }}
     transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
@@ -48,7 +49,7 @@ const GlowOrb: React.FC<{
 const Particle: React.FC<{ x: number; y: number; size: number; color: string; delay: number }> = ({ x, y, size, color, delay }) => (
   <motion.div
     className="absolute rounded-full pointer-events-none"
-    style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: color }}
+    style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: color, willChange: 'transform, opacity' }}
     animate={{ y: [0, -40, -20, -60, 0], x: [0, 15, -10, 20, 0], opacity: [0, 0.35, 0.18, 0.28, 0] }}
     transition={{ duration: 8 + delay, delay, repeat: Infinity, ease: 'easeInOut' }}
   />
@@ -78,8 +79,7 @@ const IdeaBulb: React.FC = () => (
     {/* Bulb SVG */}
     <motion.svg
       width="38" height="38" viewBox="0 0 24 24" fill="none"
-      animate={{ filter: ['drop-shadow(0 0 4px rgba(234,179,8,0.5))', 'drop-shadow(0 0 12px rgba(234,179,8,0.9)) drop-shadow(0 0 20px rgba(99,102,241,0.5))', 'drop-shadow(0 0 4px rgba(234,179,8,0.5))'] }}
-      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+      style={{ filter: 'drop-shadow(0 0 8px rgba(234,179,8,0.7))' }}
     >
       {/* Bulb body */}
       <motion.path
@@ -126,11 +126,19 @@ export const Hero: React.FC = () => {
   const [idea, setIdea] = useState('')
   const [presetIndex, setPresetIndex] = useState(0)
   const [isFocused, setIsFocused] = useState(false)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const navigate = useNavigate()
   const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS]
 
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   // Memoized so they don't regenerate on every keystroke re-render
-  const particles = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
+  const particles = useMemo(() => Array.from({ length: isMobile ? 0 : 12 }, (_, i) => ({
     id: i,
     x: (i * 37 + 11) % 100,
     y: (i * 53 + 7) % 100,
@@ -153,13 +161,15 @@ export const Hero: React.FC = () => {
     <section className="relative min-h-screen overflow-hidden" style={{ background: 'linear-gradient(160deg, #ffffff 0%, #f8f7ff 40%, #fdf4ff 70%, #f0f9ff 100%)' }}>
       <GridBackground />
 
-      {/* Soft glow orbs — pastel for light bg */}
-      <GlowOrb size={700} x="5%" y="0%" color="rgba(99,102,241,0.6)" delay={0} duration={12} />
-      <GlowOrb size={500} x="60%" y="10%" color="rgba(139,92,246,0.5)" delay={2} duration={15} />
-      <GlowOrb size={400} x="25%" y="55%" color="rgba(236,72,153,0.4)" delay={4} duration={10} />
-      <GlowOrb size={350} x="75%" y="50%" color="rgba(99,102,241,0.5)" delay={1} duration={14} />
+      {/* Soft glow orbs — desktop only */}
+      {!isMobile && <>
+        <GlowOrb size={700} x="5%" y="0%" color="rgba(99,102,241,0.6)" delay={0} duration={12} />
+        <GlowOrb size={500} x="60%" y="10%" color="rgba(139,92,246,0.5)" delay={2} duration={15} />
+        <GlowOrb size={400} x="25%" y="55%" color="rgba(236,72,153,0.4)" delay={4} duration={10} />
+        <GlowOrb size={350} x="75%" y="50%" color="rgba(99,102,241,0.5)" delay={1} duration={14} />
+      </>}
 
-      {/* Floating particles */}
+      {/* Floating particles — desktop only */}
       {particles.map((p) => (
         <Particle key={p.id} x={p.x} y={p.y} size={p.size} color={p.color} delay={p.delay} />
       ))}
@@ -217,10 +227,10 @@ export const Hero: React.FC = () => {
         {/* Input card — light glass */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.35 }} className="w-full max-w-2xl">
           <div className="rounded-2xl p-5 transition-all duration-300" style={{
-            background: isFocused ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.90)',
+            background: isFocused ? '#ffffff' : 'rgba(255,255,255,0.95)',
             border: `1.5px solid ${isFocused ? 'rgba(99,102,241,0.5)' : 'rgba(99,102,241,0.18)'}`,
             boxShadow: isFocused ? '0 0 0 4px rgba(99,102,241,0.08), 0 8px 40px rgba(99,102,241,0.12)' : '0 4px 24px rgba(99,102,241,0.08), 0 1px 4px rgba(0,0,0,0.05)',
-            backdropFilter: 'blur(20px)',
+            backdropFilter: isMobile ? 'none' : 'blur(20px)',
           }}>
             <textarea
               value={idea}
@@ -276,9 +286,8 @@ export const Hero: React.FC = () => {
             { score: 71, label: 'B2B Invoice SaaS', color: '#6366f1', verdict: 'Viable' },
           ].map((card) => (
             <div key={card.label} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{
-              background: 'rgba(255,255,255,0.85)',
+              background: '#ffffff',
               border: '1px solid rgba(99,102,241,0.12)',
-              backdropFilter: 'blur(10px)',
               boxShadow: '0 4px 16px rgba(99,102,241,0.08)',
             }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: `${card.color}18`, border: `1px solid ${card.color}40`, color: card.color }}>
