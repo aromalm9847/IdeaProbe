@@ -43,7 +43,7 @@ export default function AuthScreen() {
         ? await loginUser(identifier, password)
         : await registerUser({ full_name: fullName, email, password })
       setUser(res.data)
-      router.replace("/")
+      router.replace("/(tabs)")
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } }; message?: string }
       setError(err?.response?.data?.detail || err?.message || "Something went wrong.")
@@ -232,7 +232,7 @@ export default function AuthScreen() {
           </View>
 
           {/* Guest */}
-          <TouchableOpacity style={[s.guestBtn, shadow.sm]} onPress={() => router.replace("/")}>
+          <TouchableOpacity style={[s.guestBtn, shadow.sm]} onPress={() => router.replace("/(tabs)")}>
             <Ionicons name="person-outline" size={16} color={colors.textSub} />
             <Text style={s.guestText}>Continue without account</Text>
           </TouchableOpacity>
