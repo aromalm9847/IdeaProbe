@@ -1,11 +1,15 @@
+import { useState } from "react"
 import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { SplashAnimation } from "../src/components/SplashAnimation"
 
 export default function RootLayout() {
+  const [splashDone, setSplashDone] = useState(false)
+
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
-      <StatusBar style="dark" />
+      <StatusBar style={splashDone ? "dark" : "light"} />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: "#FFFFFF" },
@@ -22,6 +26,9 @@ export default function RootLayout() {
         <Stack.Screen name="history" options={{ title: "Scan History" }} />
         <Stack.Screen name="auth" options={{ title: "", headerTransparent: true }} />
       </Stack>
+
+      {/* Premium opening splash — renders on top until animation completes */}
+      {!splashDone && <SplashAnimation onFinish={() => setSplashDone(true)} />}
     </GestureHandlerRootView>
   )
 }
