@@ -308,11 +308,15 @@ async def login_or_create_with_google(
         result = await db.execute(select(User).where(User.email == email))
         user = result.scalar_one_or_none()
         if user:
+            if not user.is_active:
+                return {"error": "Account is disabled."}
             user.google_sub = google_sub
             if not user.avatar_url:
                 user.avatar_url = avatar_url
             if not user.full_name:
                 user.full_name = full_name
+    elif not user.is_active:
+        return {"error": "Account is disabled."}
 
     # 3. Otherwise, create a new user
     if not user:
@@ -323,12 +327,10 @@ async def login_or_create_with_google(
             auth_provider="google",
             google_sub=google_sub,
             avatar_url=avatar_url,
+            is_active=True,
         )
         db.add(user)
         logger.info(f"New user via Google OAuth: {email}")
-
-    if not user.is_active:
-        return {"error": "Account is disabled."}
 
     user.last_login = datetime.datetime.utcnow()
     await db.commit()
