@@ -292,21 +292,6 @@ export const AuthModal: React.FC = () => {
     </button>
   )
 
-  const OTPInput = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-    <div>
-      <label className="block text-xs font-medium text-slate-500 mb-1.5">6-Digit OTP Code</label>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
-        placeholder="123456"
-        className="input-premium w-full px-4 py-3 text-sm text-center tracking-[0.5em] font-mono"
-        maxLength={6}
-        required
-        autoFocus
-      />
-    </div>
-  )
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -462,7 +447,19 @@ export const AuthModal: React.FC = () => {
                     <form onSubmit={handleResetPassword} className="space-y-4">
                       <SuccessMsg />
                       <DevOtpBanner />
-                      <OTPInput value={otpCode} onChange={setOtpCode} />
+                      <div>
+                        <label className="block text-xs font-medium text-slate-500 mb-1.5">6-Digit OTP Code</label>
+                        <input
+                          type="text"
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          placeholder="123456"
+                          className="input-premium w-full px-4 py-3 text-sm text-center tracking-[0.5em] font-mono"
+                          maxLength={6}
+                          required
+                          autoFocus
+                        />
+                      </div>
                       <PasswordField
                         label="New Password"
                         value={newPassword}
