@@ -14,9 +14,10 @@ interface AuthState {
   isGuest: boolean
   isAuthModalOpen: boolean
   authModalMode: 'login' | 'register'
+  authReason: string | null
   setUser: (user: User | null) => void
   setGuest: (v: boolean) => void
-  openAuthModal: (mode?: 'login' | 'register') => void
+  openAuthModal: (mode?: 'login' | 'register', reason?: string) => void
   closeAuthModal: () => void
   logout: () => void
 }
@@ -28,11 +29,12 @@ export const useAuthStore = create<AuthState>()(
       isGuest: false,
       isAuthModalOpen: false,
       authModalMode: 'login',
-      setUser: (user) => set({ user, isGuest: false }),
+      authReason: null,
+      setUser: (user) => set({ user, isGuest: false, isAuthModalOpen: false, authReason: null }),
       setGuest: (v) => set({ isGuest: v }),
-      openAuthModal: (mode = 'login') => set({ isAuthModalOpen: true, authModalMode: mode }),
-      closeAuthModal: () => set({ isAuthModalOpen: false }),
-      logout: () => set({ user: null, isGuest: false, isAuthModalOpen: false }),
+      openAuthModal: (mode = 'login', reason) => set({ isAuthModalOpen: true, authModalMode: mode, authReason: reason ?? null }),
+      closeAuthModal: () => set({ isAuthModalOpen: false, authReason: null }),
+      logout: () => set({ user: null, isGuest: false, isAuthModalOpen: false, authReason: null }),
     }),
     {
       name: 'ideaprobe-auth',

@@ -52,7 +52,7 @@ const PasswordField: React.FC<{
 )
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, authModalMode, closeAuthModal, setUser, setGuest } = useAuthStore()
+  const { isAuthModalOpen, authModalMode, authReason, closeAuthModal, setUser, setGuest } = useAuthStore()
 
   const [mode, setMode] = useState<ModalMode>(authModalMode as ModalMode)
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('email')
@@ -332,6 +332,13 @@ export const AuthModal: React.FC = () => {
                 <h2 className="font-display text-xl font-bold text-slate-900">{titles[mode].title}</h2>
                 <p className="text-slate-500 text-sm mt-1">{titles[mode].subtitle}</p>
               </div>
+
+              {authReason && (
+                <div className="mb-5 rounded-xl px-4 py-3 text-sm text-center"
+                  style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.08))', border: '1px solid rgba(99,102,241,0.18)', color: '#4338ca' }}>
+                  <span className="font-medium">{authReason}</span>
+                </div>
+              )}
 
               {/* ── Google Sign-In (login + register only) ── */}
               {(mode === 'login' || mode === 'register') && (

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScanStore } from '../store/useScanStore'
@@ -11,14 +11,33 @@ import { useAuthStore } from '../store/authStore'
 export const ScannerPage: React.FC = () => {
   const [searchParams] = useSearchParams()
   const { scanStatus, ideaText, report, error, submitScan, resetScan } = useScanStore()
-  const { user } = useAuthStore()
+  const { user, openAuthModal } = useAuthStore()
   const initialIdea = searchParams.get('idea') || ''
+  const [pendingIdea, setPendingIdea] = useState<string | null>(null)
 
   useEffect(() => {
     if (initialIdea && (scanStatus === 'complete' || scanStatus === 'failed')) {
       resetScan()
     }
   }, [initialIdea])
+
+  const handleSubmit = (idea: string) => {
+    const trimmed = idea.trim()
+    if (trimmed.length < 10) return
+    if (!user) {
+      setPendingIdea(trimmed)
+      openAuthModal('login', 'Sign in to analyze your idea')
+      return
+    }
+    submitScan(trimmed, user.access_token)
+  }
+
+  useEffect(() => {
+    if (user && pendingIdea) {
+      submitScan(pendingIdea, user.access_token)
+      setPendingIdea(null)
+    }
+  }, [user, pendingIdea])
 
   return (
     <div className='min-h-screen pt-20' style={{ background: '#f8fafc' }}>
@@ -34,7 +53,7 @@ export const ScannerPage: React.FC = () => {
               <h1 className='text-4xl font-bold text-slate-900 mb-3'>What is your startup idea?</h1>
               <p className='text-slate-500'>Get your full validation report in 60 seconds. Free.</p>
             </div>
-            <IdeaInput initialIdea={initialIdea} onSubmit={(idea) => submitScan(idea, user?.access_token)} />
+            <IdeaInput initialIdea={initialIdea} onSubmit={handleSubmit} />
           </motion.div>
         )}
         {(scanStatus === 'pending' || scanStatus === 'processing') && (
