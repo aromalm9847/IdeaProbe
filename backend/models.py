@@ -10,7 +10,10 @@ class User(Base):
     email = Column(Text, unique=True, nullable=True, index=True)       # nullable: phone-only users
     phone = Column(Text, unique=True, nullable=True, index=True)       # phone number (with country code)
     full_name = Column(Text, nullable=True)
-    hashed_password = Column(Text, nullable=True)                      # nullable: OTP-only users
+    hashed_password = Column(Text, nullable=True)                      # nullable: OTP-only / OAuth users
+    auth_provider = Column(Text, default="email", nullable=True)       # "email" | "google" | "phone"
+    google_sub = Column(Text, unique=True, nullable=True, index=True)  # Google's stable user id
+    avatar_url = Column(Text, nullable=True)                           # profile picture from OAuth
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

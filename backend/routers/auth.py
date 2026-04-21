@@ -17,6 +17,7 @@ from services.auth_service import (
     register_user,
     login_user,
     login_or_create_with_otp,
+    login_or_create_with_google,
     reset_password_with_otp,
     get_current_user,
 )
@@ -71,6 +72,10 @@ class ResetPasswordRequest(BaseModel):
     identifier: str
     code: str
     new_password: str
+
+
+class GoogleAuthRequest(BaseModel):
+    id_token: str   # Google ID token from frontend (web/iOS/Android)
 
 
 # ── Registration ──────────────────────────────────────────────────────────────
@@ -214,6 +219,44 @@ async def reset_password(req: ResetPasswordRequest, db: AsyncSession = Depends(g
     result = await reset_password_with_otp(db, identifier, req.new_password, is_phone=is_ph)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+# ── Google OAuth Login ───────────────────────────────────────────────────────
+
+@router.post("/google")
+async def google_login(request: Request, req: GoogleAuthRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Sign in (or auto-register) with a Google ID token.
+    Frontend (web/iOS/Android) obtains the token from Google, then POSTs it here.
+    Backend verifies signature against Google's public keys and issues a JWT.
+    """
+    if not req.id_token:
+        raise HTTPException(status_code=400, detail="Missing Google ID token.")
+
+    result = await login_or_create_with_google(db, req.id_token)
+    if "error" in result:
+        raise HTTPException(status_code=401, detail=result["error"])
+
+    # Retroactively link guest scans from this IP (last 2 hours)
+    user_id = result.get("user_id")
+    if user_id:
+        try:
+            import datetime as dt
+            client_ip = request.client.host if request.client else "unknown"
+            ip_hash = hashlib.sha256(client_ip.encode()).hexdigest()
+            session_cutoff = dt.datetime.utcnow() - dt.timedelta(hours=2)
+            await db.execute(
+                text(
+                    "UPDATE scans SET user_id = :uid "
+                    "WHERE user_id IS NULL AND ip_hash = :ip AND created_at > :cutoff"
+                ),
+                {"uid": user_id, "ip": ip_hash, "cutoff": session_cutoff},
+            )
+            await db.commit()
+        except Exception:
+            pass
+
     return result
 
 

@@ -250,6 +250,102 @@ async def reset_password_with_otp(
     }
 
 
+# ── Google OAuth ──────────────────────────────────────────────────────────────
+
+async def login_or_create_with_google(
+    db: AsyncSession,
+    id_token_str: str,
+) -> dict:
+    """
+    Verify a Google ID token and log in (or auto-create) the user.
+    Accepts ID tokens issued for any of the GOOGLE_CLIENT_ID values configured
+    (web, iOS, Android can have different audiences).
+    """
+    # Lazy import so the dependency is only required when Google login is actually used
+    try:
+        from google.oauth2 import id_token as google_id_token
+        from google.auth.transport import requests as google_requests
+    except ImportError:
+        return {"error": "Google authentication is not configured on the server."}
+
+    # Comma-separated list of allowed client IDs (web, ios, android)
+    raw_audiences = os.getenv("GOOGLE_CLIENT_IDS") or os.getenv("GOOGLE_CLIENT_ID", "")
+    audiences = [a.strip() for a in raw_audiences.split(",") if a.strip()]
+    if not audiences:
+        return {"error": "Google sign-in is not enabled. Missing GOOGLE_CLIENT_ID."}
+
+    try:
+        # google-auth verifies the signature against Google's public keys and checks `exp`/`iss`.
+        info = google_id_token.verify_oauth2_token(
+            id_token_str,
+            google_requests.Request(),
+            audience=audiences if len(audiences) > 1 else audiences[0],
+        )
+    except ValueError as e:
+        logger.warning(f"Google token verification failed: {e}")
+        return {"error": "Invalid Google token. Please try again."}
+
+    if info.get("iss") not in ("accounts.google.com", "https://accounts.google.com"):
+        return {"error": "Invalid token issuer."}
+
+    google_sub = info.get("sub")
+    email = (info.get("email") or "").lower().strip()
+    full_name = info.get("name") or ""
+    avatar_url = info.get("picture") or ""
+    email_verified = info.get("email_verified", False)
+
+    if not google_sub:
+        return {"error": "Google token missing subject id."}
+    if not email or not email_verified:
+        return {"error": "Google email is missing or not verified."}
+
+    # 1. Find by google_sub
+    result = await db.execute(select(User).where(User.google_sub == google_sub))
+    user = result.scalar_one_or_none()
+
+    # 2. Otherwise, link to existing email account
+    if not user:
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if user:
+            user.google_sub = google_sub
+            if not user.avatar_url:
+                user.avatar_url = avatar_url
+            if not user.full_name:
+                user.full_name = full_name
+
+    # 3. Otherwise, create a new user
+    if not user:
+        user = User(
+            email=email,
+            full_name=full_name,
+            hashed_password=None,
+            auth_provider="google",
+            google_sub=google_sub,
+            avatar_url=avatar_url,
+        )
+        db.add(user)
+        logger.info(f"New user via Google OAuth: {email}")
+
+    if not user.is_active:
+        return {"error": "Account is disabled."}
+
+    user.last_login = datetime.datetime.utcnow()
+    await db.commit()
+    await db.refresh(user)
+
+    token = create_access_token(user.id, email)
+    return {
+        "user_id": user.id,
+        "email": user.email or "",
+        "phone": user.phone or "",
+        "full_name": user.full_name or "",
+        "avatar_url": user.avatar_url or "",
+        "access_token": token,
+        "token_type": "bearer",
+    }
+
+
 # ── Token Verification ────────────────────────────────────────────────────────
 
 async def get_current_user(db: AsyncSession, token: str) -> Optional[User]:

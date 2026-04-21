@@ -29,6 +29,46 @@ Base = declarative_base()
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        await _migrate_user_oauth_columns(conn)
+
+
+async def _migrate_user_oauth_columns(conn):
+    """Idempotent ALTER TABLE for OAuth columns on the users table.
+    Works on both SQLite (local) and PostgreSQL (Railway)."""
+    from sqlalchemy import text
+    is_pg = DATABASE_URL.startswith("postgresql")
+
+    if is_pg:
+        statements = [
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider TEXT DEFAULT 'email'",
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS google_sub TEXT",
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT",
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)",
+        ]
+        for stmt in statements:
+            try:
+                await conn.execute(text(stmt))
+            except Exception:
+                pass
+    else:
+        # SQLite: PRAGMA to check existing columns, ADD if missing
+        result = await conn.execute(text("PRAGMA table_info(users)"))
+        existing = {row[1] for row in result.fetchall()}
+        adds = [
+            ("auth_provider", "ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'email'"),
+            ("google_sub", "ALTER TABLE users ADD COLUMN google_sub TEXT"),
+            ("avatar_url", "ALTER TABLE users ADD COLUMN avatar_url TEXT"),
+        ]
+        for col, stmt in adds:
+            if col not in existing:
+                try:
+                    await conn.execute(text(stmt))
+                except Exception:
+                    pass
+        try:
+            await conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)"))
+        except Exception:
+            pass
 
 
 async def get_db():
