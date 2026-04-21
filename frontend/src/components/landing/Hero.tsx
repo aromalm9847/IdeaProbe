@@ -55,64 +55,185 @@ const Particle: React.FC<{ x: number; y: number; size: number; color: string; de
   />
 )
 
-// Animated premium lightbulb
-const IdeaBulb: React.FC = () => (
-  <motion.div
-    className="relative flex items-center justify-center"
-    animate={{ y: [0, -8, 0] }}
-    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-  >
-    {/* Outer glow ring */}
+// Premium glowing lightbulb — medium-size, high-quality, realistic glass + filament
+const IdeaBulb: React.FC = () => {
+  const SIZE = 180 // overall visual container
+  const BULB = 96  // SVG viewport
+  return (
     <motion.div
-      className="absolute rounded-full"
-      style={{ width: 80, height: 80, background: 'radial-gradient(circle, rgba(99,102,241,0.18), rgba(139,92,246,0.10), transparent 70%)' }}
-      animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
-      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-    />
-    {/* Inner soft halo */}
-    <motion.div
-      className="absolute rounded-full"
-      style={{ width: 52, height: 52, background: 'radial-gradient(circle, rgba(234,179,8,0.22), rgba(99,102,241,0.12), transparent 70%)' }}
-      animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-    />
-    {/* Bulb SVG */}
-    <motion.svg
-      width="38" height="38" viewBox="0 0 24 24" fill="none"
-      style={{ filter: 'drop-shadow(0 0 8px rgba(234,179,8,0.7))' }}
+      className="relative flex items-center justify-center"
+      style={{ width: SIZE, height: SIZE }}
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
     >
-      {/* Bulb body */}
-      <motion.path
-        d="M9 21h6M10 17.5c-.5-1-1.5-2-2-3.5a5 5 0 1 1 8 0c-.5 1.5-1.5 2.5-2 3.5H10z"
-        stroke="url(#bulbGrad)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-        animate={{ stroke: ['url(#bulbGrad)', 'url(#bulbGradBright)', 'url(#bulbGrad)'] }}
-        transition={{ duration: 2.5, repeat: Infinity }}
+      {/* Outer ambient glow — large, soft, warm */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: SIZE + 40, height: SIZE + 40,
+          background: 'radial-gradient(circle, rgba(253,224,71,0.28) 0%, rgba(234,179,8,0.18) 25%, rgba(139,92,246,0.10) 50%, transparent 75%)',
+          filter: 'blur(8px)',
+        }}
+        animate={{ scale: [1, 1.18, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
       />
-      {/* Filament lines */}
-      <path d="M10 17.5h4" stroke="url(#bulbGrad)" strokeWidth="1.5" strokeLinecap="round" />
-      {/* Shine sparkle dots */}
-      <motion.circle cx="17.5" cy="7" r="0.8" fill="rgba(234,179,8,0.9)"
-        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }} />
-      <motion.circle cx="19" cy="11" r="0.6" fill="rgba(99,102,241,0.8)"
-        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 1 }} />
-      <motion.circle cx="5.5" cy="8" r="0.7" fill="rgba(139,92,246,0.8)"
-        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0.8 }} />
-      <defs>
-        <linearGradient id="bulbGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#eab308" />
-          <stop offset="100%" stopColor="#6366f1" />
-        </linearGradient>
-        <linearGradient id="bulbGradBright" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fde68a" />
-          <stop offset="100%" stopColor="#a5b4fc" />
-        </linearGradient>
-      </defs>
-    </motion.svg>
-  </motion.div>
-)
+      {/* Mid warmth halo — gold */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: SIZE - 20, height: SIZE - 20,
+          background: 'radial-gradient(circle, rgba(253,224,71,0.55) 0%, rgba(234,179,8,0.3) 30%, transparent 65%)',
+          filter: 'blur(4px)',
+        }}
+        animate={{ scale: [1, 1.1, 1], opacity: [0.75, 1, 0.75] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+      />
+      {/* Tight core glow — bright white-gold */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: SIZE - 80, height: SIZE - 80,
+          background: 'radial-gradient(circle, rgba(255,251,235,0.9) 0%, rgba(253,224,71,0.6) 35%, transparent 70%)',
+          filter: 'blur(2px)',
+          mixBlendMode: 'screen',
+        }}
+        animate={{ scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbiting sparkle particles */}
+      {[
+        { angle: 25, radius: 72, size: 3, color: 'rgba(253,224,71,0.9)', delay: 0 },
+        { angle: 110, radius: 80, size: 2, color: 'rgba(99,102,241,0.85)', delay: 0.6 },
+        { angle: 195, radius: 68, size: 2.5, color: 'rgba(139,92,246,0.8)', delay: 1.2 },
+        { angle: 300, radius: 78, size: 2, color: 'rgba(236,72,153,0.75)', delay: 0.9 },
+        { angle: 60, radius: 88, size: 1.8, color: 'rgba(253,224,71,0.7)', delay: 1.5 },
+      ].map((p, i) => {
+        const rad = (p.angle * Math.PI) / 180
+        const x = Math.cos(rad) * p.radius
+        const y = Math.sin(rad) * p.radius
+        return (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: p.size * 2, height: p.size * 2,
+              background: p.color,
+              left: `calc(50% + ${x}px - ${p.size}px)`,
+              top:  `calc(50% + ${y}px - ${p.size}px)`,
+              boxShadow: `0 0 8px ${p.color}`,
+            }}
+            animate={{ opacity: [0, 1, 0], scale: [0.6, 1.4, 0.6] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
+          />
+        )
+      })}
+
+      {/* Premium SVG bulb */}
+      <svg
+        width={BULB} height={BULB} viewBox="0 0 96 96" fill="none"
+        className="relative"
+        style={{ filter: 'drop-shadow(0 8px 24px rgba(234,179,8,0.35)) drop-shadow(0 0 16px rgba(253,224,71,0.45))' }}
+      >
+        <defs>
+          {/* Glass body gradient */}
+          <radialGradient id="bulbGlass" cx="0.42" cy="0.38" r="0.75">
+            <stop offset="0%"  stopColor="#fffbeb" stopOpacity="0.95" />
+            <stop offset="35%" stopColor="#fde68a" stopOpacity="0.9" />
+            <stop offset="70%" stopColor="#fbbf24" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#d97706" stopOpacity="0.7" />
+          </radialGradient>
+          {/* Inner glow */}
+          <radialGradient id="bulbCore" cx="0.5" cy="0.55" r="0.5">
+            <stop offset="0%"  stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="40%" stopColor="#fef3c7" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.0" />
+          </radialGradient>
+          {/* Base metal gradient */}
+          <linearGradient id="baseMetal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stopColor="#cbd5e1" />
+            <stop offset="45%" stopColor="#94a3b8" />
+            <stop offset="100%" stopColor="#64748b" />
+          </linearGradient>
+          {/* Glass rim */}
+          <linearGradient id="glassRim" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stopColor="#6366f1" stopOpacity="0.25" />
+            <stop offset="50%" stopColor="#fbbf24" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.3" />
+          </linearGradient>
+          {/* Filament */}
+          <linearGradient id="filament" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"  stopColor="#fbbf24" />
+            <stop offset="50%" stopColor="#fef3c7" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+          {/* Highlight sheen */}
+          <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stopColor="#ffffff" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* Bulb glass body — teardrop shape */}
+        <motion.path
+          d="M48 10 C 62 10, 74 22, 74 38 C 74 48, 68 55, 62 61 C 58 65, 56 68, 55 72 L 41 72 C 40 68, 38 65, 34 61 C 28 55, 22 48, 22 38 C 22 22, 34 10, 48 10 Z"
+          fill="url(#bulbGlass)"
+          stroke="url(#glassRim)"
+          strokeWidth="1.2"
+          animate={{ opacity: [0.92, 1, 0.92] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Inner core light */}
+        <motion.ellipse
+          cx="48" cy="40" rx="18" ry="22"
+          fill="url(#bulbCore)"
+          animate={{ opacity: [0.7, 1, 0.7], rx: [17, 19, 17] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Filament — wavy wire */}
+        <motion.path
+          d="M40 46 Q 44 38, 48 46 T 56 46"
+          stroke="url(#filament)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          fill="none"
+          animate={{ opacity: [0.85, 1, 0.85], filter: [
+            'drop-shadow(0 0 3px #fbbf24)',
+            'drop-shadow(0 0 6px #fef3c7)',
+            'drop-shadow(0 0 3px #fbbf24)',
+          ] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        {/* Filament support wires */}
+        <path d="M40 46 L 40 60" stroke="#cbd5e1" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
+        <path d="M56 46 L 56 60" stroke="#cbd5e1" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
+
+        {/* Glass highlight sheen — top-left */}
+        <path
+          d="M34 22 Q 38 16, 44 16 Q 40 20, 38 26 Q 36 28, 34 22 Z"
+          fill="url(#sheen)"
+          opacity="0.8"
+        />
+
+        {/* Metal base — screw threads */}
+        <rect x="39" y="72" width="18" height="4" rx="1.5" fill="url(#baseMetal)" />
+        <rect x="40" y="76" width="16" height="3" rx="1" fill="url(#baseMetal)" opacity="0.95" />
+        <rect x="41" y="79" width="14" height="3" rx="1" fill="url(#baseMetal)" opacity="0.9" />
+        <rect x="42" y="82" width="12" height="3" rx="1" fill="url(#baseMetal)" opacity="0.85" />
+        {/* Contact tip */}
+        <rect x="44" y="85" width="8" height="3" rx="1.5" fill="#475569" />
+        <ellipse cx="48" cy="88" rx="3" ry="1.5" fill="#334155" />
+
+        {/* Horizontal thread shadows */}
+        <line x1="40" y1="77.5" x2="56" y2="77.5" stroke="#475569" strokeWidth="0.5" opacity="0.4" />
+        <line x1="41" y1="80.5" x2="55" y2="80.5" stroke="#475569" strokeWidth="0.5" opacity="0.4" />
+        <line x1="42" y1="83.5" x2="54" y2="83.5" stroke="#475569" strokeWidth="0.5" opacity="0.4" />
+      </svg>
+    </motion.div>
+  )
+}
 
 // Subtle grid for light bg
 const GridBackground: React.FC = () => (
@@ -187,7 +308,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-48px)] px-4 max-w-5xl mx-auto py-16">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-48px)] px-6 max-w-6xl mx-auto py-16">
 
         {/* Idea Bulb */}
         <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, type: 'spring', stiffness: 200 }} className="mb-6">
