@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import axios from 'axios'
 
-const API = import.meta.env.VITE_API_BASE_URL || 'https://backend-production-603e.up.railway.app'
+const API = import.meta.env.VITE_API_BASE_URL || 'https://ideaprobe-production-825e.up.railway.app'
 
 interface HistoryItem {
   scan_id: number

@@ -5,7 +5,7 @@ import { useAuthStore } from '../../store/authStore'
 import { GoogleSignInButton } from './GoogleSignInButton'
 import axios from 'axios'
 
-const API = import.meta.env.VITE_API_BASE_URL || 'https://backend-production-603e.up.railway.app'
+const API = import.meta.env.VITE_API_BASE_URL || 'https://ideaprobe-production-825e.up.railway.app'
 
 type ModalMode = 'login' | 'register' | 'forgot'
 type LoginMethod = 'email' | 'phone'
