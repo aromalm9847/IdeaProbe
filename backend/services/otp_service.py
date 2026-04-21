@@ -50,6 +50,8 @@ async def send_email_otp(to_email: str, otp: str, purpose: str) -> bool:
     smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     from_name = os.getenv("SMTP_FROM_NAME", "IdeaProbe")
+    # Prefer a human-readable from address; fall back to smtp_user
+    from_email = os.getenv("SMTP_FROM", smtp_user)
 
     subject_map = {
         "forgot_password": "Reset your IdeaProbe password",
@@ -89,11 +91,12 @@ https://ideaprobe-app.netlify.app
 
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
-        msg["From"] = f"{from_name} <{smtp_user}>"
+        msg["From"] = f"{from_name} <{from_email}>"
         msg["To"] = to_email
         msg.attach(MIMEText(body, "plain"))
 
-        await aiosmtplib.send(
+        logger.warning(f"OTP send: to={to_email} from={from_email} host={smtp_host}:{smtp_port} user={smtp_user}")
+        resp = await aiosmtplib.send(
             msg,
             hostname=smtp_host,
             port=smtp_port,
@@ -101,11 +104,10 @@ https://ideaprobe-app.netlify.app
             password=smtp_password,
             start_tls=True,
         )
-        logger.info(f"OTP email sent to {to_email} (purpose: {purpose})")
+        logger.warning(f"OTP send OK to {to_email}: SMTP response={resp}")
         return True
     except Exception as e:
-        logger.error(f"Failed to send OTP email to {to_email}: {e}")
-        # Fallback: log to console so dev can still test
+        logger.error(f"Failed to send OTP email to {to_email}: {type(e).__name__}: {e}")
         print(f"\n[OTP FALLBACK] {to_email}: {otp} (purpose: {purpose})\n")
         return False
 
