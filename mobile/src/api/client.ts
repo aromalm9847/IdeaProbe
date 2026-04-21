@@ -40,3 +40,12 @@ export const getUserHistory = (token: string) =>
   api.get('/api/auth/scan-history', {
     headers: { Authorization: `Bearer ${token}` },
   })
+
+export const googleLogin = (idToken: string) =>
+  api.post('/api/auth/google', { id_token: idToken })
+
+export const sendOtp = (identifier: string, purpose: 'forgot_password' | 'phone_login' | 'email_otp') =>
+  api.post('/api/auth/send-otp', { identifier, purpose })
+
+export const resetPassword = (identifier: string, code: string, new_password: string) =>
+  api.post('/api/auth/reset-password', { identifier, code, new_password })

@@ -37,6 +37,18 @@ export default function RootLayout() {
               animation: "slide_from_right",
             }}
           />
+          <Stack.Screen
+            name="forgot-password"
+            options={{
+              headerShown: true,
+              title: "Reset Password",
+              headerStyle: { backgroundColor: "#FFFFFF" },
+              headerTintColor: "#0F172A",
+              headerTitleStyle: { fontWeight: "700", fontSize: 17 },
+              headerShadowVisible: false,
+              animation: "slide_from_right",
+            }}
+          />
         </Stack>
 
         {/* Opening splash — full-screen overlay, auto-dismisses */}

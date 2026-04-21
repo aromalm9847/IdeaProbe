@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
+import { GoogleSignInButton } from './GoogleSignInButton'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_BASE_URL || 'https://backend-production-603e.up.railway.app'
@@ -208,6 +209,22 @@ export const AuthModal: React.FC = () => {
     closeAuthModal()
   }
 
+  // ── Google Sign-In ────────────────────────────────────────────────────────
+
+  const handleGoogleCredential = async (idToken: string) => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await axios.post(`${API}/api/auth/google`, { id_token: idToken })
+      setUser(res.data)
+      closeAuthModal()
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Google sign-in failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // ── Shared UI ─────────────────────────────────────────────────────────────
 
   const MethodToggle = () => (
@@ -330,6 +347,22 @@ export const AuthModal: React.FC = () => {
                 <h2 className="font-display text-xl font-bold text-slate-900">{titles[mode].title}</h2>
                 <p className="text-slate-500 text-sm mt-1">{titles[mode].subtitle}</p>
               </div>
+
+              {/* ── Google Sign-In (login + register only) ── */}
+              {(mode === 'login' || mode === 'register') && (
+                <div className="space-y-3 mb-4">
+                  <GoogleSignInButton
+                    onCredential={handleGoogleCredential}
+                    onError={(m) => setError(m)}
+                    text={mode === 'register' ? 'signup_with' : 'continue_with'}
+                  />
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-xs text-slate-400">or continue with email</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                </div>
+              )}
 
               {/* ── LOGIN FORM ── */}
               {mode === 'login' && (

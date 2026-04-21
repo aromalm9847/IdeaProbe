@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useEffect } from "react"
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet,
@@ -7,10 +7,14 @@ import {
 import { useRouter } from "expo-router"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
+import * as Google from "expo-auth-session/providers/google"
+import * as WebBrowser from "expo-web-browser"
 import { useAuthStore } from "../src/store/authStore"
-import { loginUser, registerUser } from "../src/api/client"
+import { loginUser, registerUser, googleLogin } from "../src/api/client"
 import { colors, shadow } from "../src/theme"
 import { useEntrance, usePressScale } from "../src/hooks/useEntrance"
+
+WebBrowser.maybeCompleteAuthSession()
 
 export default function AuthScreen() {
   const router = useRouter()
@@ -28,6 +32,47 @@ export default function AuthScreen() {
   const switchMode = (m: "login" | "register") => {
     setMode(m)
     setError("")
+  }
+
+  // ── Google Sign-In ──────────────────────────────────────────────────────
+  const [, googleResponse, promptGoogle] = Google.useIdTokenAuthRequest({
+    clientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+  })
+
+  useEffect(() => {
+    if (googleResponse?.type === "success") {
+      const idToken = googleResponse.params?.id_token
+      if (!idToken) { setError("Google sign-in returned no token."); return }
+      ;(async () => {
+        setLoading(true)
+        try {
+          const res = await googleLogin(idToken)
+          setUser(res.data)
+          router.replace("/(tabs)")
+        } catch (e: any) {
+          setError(e?.response?.data?.detail || "Google sign-in failed.")
+        } finally {
+          setLoading(false)
+        }
+      })()
+    } else if (googleResponse?.type === "error") {
+      setError("Google sign-in was cancelled.")
+    }
+  }, [googleResponse, setUser, router])
+
+  const handleGoogle = async () => {
+    setError("")
+    if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+      setError("Google sign-in not configured.")
+      return
+    }
+    try {
+      await promptGoogle()
+    } catch (e: any) {
+      setError(e?.message || "Could not open Google sign-in.")
+    }
   }
 
   const handleSubmit = async () => {
@@ -158,7 +203,14 @@ export default function AuthScreen() {
 
             {/* Password */}
             <View style={[s.fieldWrap, { marginBottom: 0 }]}>
-              <Text style={s.fieldLabel}>Password</Text>
+              <View style={s.fieldLabelRow}>
+                <Text style={s.fieldLabel}>Password</Text>
+                {mode === "login" && (
+                  <TouchableOpacity onPress={() => router.push("/forgot-password")} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                    <Text style={s.forgotLink}>Forgot password?</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
               <View style={s.inputRow}>
                 <View style={s.iconWrap}>
                   <Ionicons name="lock-closed-outline" size={17} color={colors.primary} />
@@ -230,6 +282,19 @@ export default function AuthScreen() {
             <Text style={s.dividerText}>or</Text>
             <View style={s.dividerLine} />
           </View>
+
+          {/* Google Sign-In */}
+          <TouchableOpacity
+            style={[s.googleBtn, shadow.sm]}
+            onPress={handleGoogle}
+            disabled={loading}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="logo-google" size={18} color="#DB4437" />
+            <Text style={s.googleText}>
+              {mode === "login" ? "Continue with Google" : "Sign up with Google"}
+            </Text>
+          </TouchableOpacity>
 
           {/* Guest */}
           <TouchableOpacity style={[s.guestBtn, shadow.sm]} onPress={() => router.replace("/(tabs)")}>
@@ -306,7 +371,9 @@ const s = StyleSheet.create({
 
   // Fields
   fieldWrap: { gap: 8, marginBottom: 4 },
+  fieldLabelRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   fieldLabel: { fontSize: 13, fontWeight: "700", color: colors.textSub, marginLeft: 2 },
+  forgotLink: { fontSize: 12, fontWeight: "600", color: colors.primary, marginRight: 2 },
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -348,6 +415,21 @@ const s = StyleSheet.create({
   dividerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, gap: 12 },
   dividerLine: { flex: 1, height: 1, backgroundColor: "#E2E8F0" },
   dividerText: { color: colors.muted, fontSize: 13 },
+
+  // Google
+  googleBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    paddingVertical: 15,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    marginBottom: 12,
+  },
+  googleText: { color: colors.text, fontWeight: "700", fontSize: 14 },
 
   // Guest
   guestBtn: {
