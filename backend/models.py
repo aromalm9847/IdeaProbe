@@ -47,6 +47,27 @@ class Scan(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     ip_hash = Column(Text, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # null = guest
+    country = Column(Text, nullable=True)    # ISO country name (GeoIP)
+    region = Column(Text, nullable=True)     # state / region
+    city = Column(Text, nullable=True)
+    country_code = Column(Text, nullable=True)  # 2-letter ISO
+
+
+class LoginEvent(Base):
+    """Audit trail: every successful login attempt."""
+    __tablename__ = "login_events"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    email = Column(Text, nullable=True, index=True)   # denormalized for fast search
+    provider = Column(Text, nullable=False)           # "password" | "google" | "otp"
+    ip = Column(Text, nullable=True)
+    country = Column(Text, nullable=True)
+    country_code = Column(Text, nullable=True)
+    region = Column(Text, nullable=True)
+    city = Column(Text, nullable=True)
+    user_agent = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, index=True)
 
 
 class LeaderboardEntry(Base):

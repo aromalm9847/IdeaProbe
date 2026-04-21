@@ -30,6 +30,41 @@ async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await _migrate_user_oauth_columns(conn)
+        await _migrate_scan_geo_columns(conn)
+
+
+async def _migrate_scan_geo_columns(conn):
+    """Idempotent ALTER TABLE for geo columns on scans."""
+    from sqlalchemy import text
+    is_pg = DATABASE_URL.startswith("postgresql")
+
+    if is_pg:
+        statements = [
+            "ALTER TABLE scans ADD COLUMN IF NOT EXISTS country TEXT",
+            "ALTER TABLE scans ADD COLUMN IF NOT EXISTS region TEXT",
+            "ALTER TABLE scans ADD COLUMN IF NOT EXISTS city TEXT",
+            "ALTER TABLE scans ADD COLUMN IF NOT EXISTS country_code TEXT",
+        ]
+        for stmt in statements:
+            try:
+                await conn.execute(text(stmt))
+            except Exception:
+                pass
+    else:
+        result = await conn.execute(text("PRAGMA table_info(scans)"))
+        existing = {row[1] for row in result.fetchall()}
+        adds = [
+            ("country", "ALTER TABLE scans ADD COLUMN country TEXT"),
+            ("region", "ALTER TABLE scans ADD COLUMN region TEXT"),
+            ("city", "ALTER TABLE scans ADD COLUMN city TEXT"),
+            ("country_code", "ALTER TABLE scans ADD COLUMN country_code TEXT"),
+        ]
+        for col, stmt in adds:
+            if col not in existing:
+                try:
+                    await conn.execute(text(stmt))
+                except Exception:
+                    pass
 
 
 async def _migrate_user_oauth_columns(conn):

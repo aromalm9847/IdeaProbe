@@ -11,6 +11,7 @@ from services.auth_service import get_current_user
 from database import get_db
 from schemas import ScanRequest, ScanResponse, ScanStatus, ReportData
 from services import pipeline
+from services import geoip_service
 
 router = APIRouter()
 
@@ -23,8 +24,8 @@ async def create_scan(
     db: AsyncSession = Depends(get_db),
     authorization: Optional[str] = Header(None),
 ):
-    client_ip = request.client.host if request.client else "unknown"
-    ip_hash = hashlib.sha256(client_ip.encode()).hexdigest()
+    ip = geoip_service.client_ip(request) or "unknown"
+    ip_hash = hashlib.sha256(ip.encode()).hexdigest()
 
     # Resolve user from token to link scan to account (no limits)
     user_id = None
@@ -34,17 +35,25 @@ async def create_scan(
         if user:
             user_id = user.id
 
+    geo = await geoip_service.lookup(ip)
+
     # Insert new scan row
     result = await db.execute(
         text(
-            "INSERT INTO scans (idea_text, status, ip_hash, user_id, created_at) "
-            "VALUES (:idea_text, 'pending', :ip_hash, :user_id, :created_at) RETURNING id"
+            "INSERT INTO scans (idea_text, status, ip_hash, user_id, created_at, "
+            "country, country_code, region, city) "
+            "VALUES (:idea_text, 'pending', :ip_hash, :user_id, :created_at, "
+            ":country, :country_code, :region, :city) RETURNING id"
         ),
         {
             "idea_text": body.idea_text,
             "ip_hash": ip_hash,
             "user_id": user_id,
             "created_at": datetime.datetime.utcnow(),
+            "country": geo.get("country"),
+            "country_code": geo.get("country_code"),
+            "region": geo.get("region"),
+            "city": geo.get("city"),
         },
     )
     await db.commit()

@@ -30,7 +30,7 @@ import { Examples, ExampleDetail } from './pages/Examples'
 import { Blog, BlogPost } from './pages/Blog'
 import { About } from './pages/About'
 import { ScanHistory } from './pages/ScanHistory'
-import { AdminPage } from './pages/AdminPage'
+import AdminPage from './pages/AdminPage'
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation()

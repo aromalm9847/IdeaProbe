@@ -22,9 +22,40 @@ from services.auth_service import (
     get_current_user,
 )
 from services.otp_service import create_and_send_otp, verify_otp
+from services import geoip_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+async def _record_login(db: AsyncSession, request: Request, user_id: int | None, email: str, provider: str):
+    """Write a row to login_events. Swallows errors so login never fails on audit."""
+    try:
+        ip = geoip_service.client_ip(request)
+        geo = await geoip_service.lookup(ip)
+        ua = request.headers.get("user-agent", "")[:500]
+        await db.execute(
+            text(
+                "INSERT INTO login_events "
+                "(user_id, email, provider, ip, country, country_code, region, city, user_agent, created_at) "
+                "VALUES (:uid, :email, :provider, :ip, :country, :cc, :region, :city, :ua, :ts)"
+            ),
+            {
+                "uid": user_id,
+                "email": (email or "")[:255],
+                "provider": provider,
+                "ip": ip,
+                "country": geo.get("country"),
+                "cc": geo.get("country_code"),
+                "region": geo.get("region"),
+                "city": geo.get("city"),
+                "ua": ua,
+                "ts": __import__("datetime").datetime.utcnow(),
+            },
+        )
+        await db.commit()
+    except Exception as e:
+        logger.warning(f"Failed to record login event: {e}")
 
 
 async def get_db():
@@ -124,8 +155,10 @@ async def login(request: Request, req: LoginRequest, db: AsyncSession = Depends(
     if "error" in result:
         raise HTTPException(status_code=401, detail=result["error"])
 
-    # Retroactively link scans from the last 2 hours from this IP (session scans only)
     user_id = result.get("user_id")
+    await _record_login(db, request, user_id, result.get("email", "") or req.identifier, "password")
+
+    # Retroactively link scans from the last 2 hours from this IP (session scans only)
     if user_id:
         try:
             import datetime as dt
@@ -180,7 +213,7 @@ async def verify_otp_endpoint(req: VerifyOTPRequest, db: AsyncSession = Depends(
 # ── OTP Login (verify + auto-login/create) ────────────────────────────────────
 
 @router.post("/otp-login")
-async def otp_login(req: OTPLoginRequest, db: AsyncSession = Depends(get_db)):
+async def otp_login(request: Request, req: OTPLoginRequest, db: AsyncSession = Depends(get_db)):
     """
     Verify OTP and log in (auto-creates account if new user).
     Used for: phone login, email OTP login.
@@ -196,6 +229,9 @@ async def otp_login(req: OTPLoginRequest, db: AsyncSession = Depends(get_db)):
     result = await login_or_create_with_otp(db, identifier, is_phone=is_ph)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+
+    user_id = result.get("user_id")
+    await _record_login(db, request, user_id, result.get("email", "") or identifier, "otp")
     return result
 
 
@@ -238,8 +274,10 @@ async def google_login(request: Request, req: GoogleAuthRequest, db: AsyncSessio
     if "error" in result:
         raise HTTPException(status_code=401, detail=result["error"])
 
-    # Retroactively link guest scans from this IP (last 2 hours)
     user_id = result.get("user_id")
+    await _record_login(db, request, user_id, result.get("email", ""), "google")
+
+    # Retroactively link guest scans from this IP (last 2 hours)
     if user_id:
         try:
             import datetime as dt
